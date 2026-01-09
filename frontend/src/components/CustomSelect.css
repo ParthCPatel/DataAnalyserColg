@@ -1,0 +1,152 @@
+.custom-select-container {
+    position: relative;
+    width: 100%;
+}
+
+.custom-select-container.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.custom-select-trigger {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.custom-select-trigger:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.custom-select-trigger.open {
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 1px var(--accent-primary);
+}
+
+.selected-value {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.placeholder {
+    color: var(--text-muted);
+}
+
+.chevron {
+    transition: transform 0.2s;
+    color: var(--text-secondary);
+    min-width: 16px;
+}
+
+.chevron.rotate {
+    transform: rotate(180deg);
+}
+
+.custom-select-options {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    width: 100%;
+    max-height: 250px;
+    overflow-y: auto;
+    background: #1f2937; /* Dark gray match */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    z-index: 50;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    padding: 4px;
+}
+
+.custom-option {
+    padding: 8px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--text-secondary);
+    transition: all 0.1s;
+}
+
+.custom-option:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+}
+
+.custom-option.selected {
+    background: var(--accent-primary);
+    color: white;
+}
+
+.option-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.option-icon {
+    min-width: 16px;
+}
+
+.check-icon {
+    min-width: 14px;
+}
+
+/* Scrollbar */
+.custom-select-options::-webkit-scrollbar {
+    width: 6px;
+}
+
+.custom-select-options::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.custom-select-options::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+.custom-select-options::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.option-text-group {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+    overflow: hidden; 
+}
+
+.option-main {
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.option-sub {
+    font-size: 11px;
+    color: var(--text-secondary);
+    opacity: 0.7;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.custom-option.selected .option-sub {
+    color: rgba(255, 255, 255, 0.8);
+    opacity: 1;
+}
