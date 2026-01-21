@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { loginUser, signupUser, clearError } from '../features/authSlice';
-import type { RootState, AppDispatch } from '../store';
+import { loginUser, signupUser, clearError } from '../../features/authSlice';
+import type { RootState, AppDispatch } from '../../store';
 import { Loader2 } from 'lucide-react';
 import './AuthPage.css';
 
@@ -62,6 +62,7 @@ const AuthPage: React.FC = () => {
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
                                 placeholder="name@company.com"
+                                autoComplete="email"
                             />
                         </div>
                         
@@ -75,6 +76,7 @@ const AuthPage: React.FC = () => {
                                 required
                                 placeholder="••••••••"
                                 minLength={6}
+                                autoComplete={isLogin ? "current-password" : "new-password"}
                             />
                         </div>
 

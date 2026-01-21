@@ -1,0 +1,351 @@
+
+.custom-dashboard-page {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    overflow: hidden;
+}
+
+.dashboard-header-bar {
+    height: 60px;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: transparent;
+    z-index: 10;
+}
+
+.grid-container {
+    flex: 1;
+    overflow-y: auto; /* Allow scrolling for the grid */
+    padding: 20px;
+    position: relative;
+}
+
+.dashboard-item {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    /* transition: box-shadow 0.2s, transform 0.2s;  Removed to avoid conflict with dragging */
+}
+
+.item-header {
+    height: 32px;
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: transparent;
+    cursor: grab;
+    user-select: none;
+}
+
+.item-header:active {
+    cursor: grabbing;
+}
+
+.item-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.item-content {
+    flex: 1;
+    padding: 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+.btn-delete-item {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    background: transparent;
+    border: 1px solid transparent; /* Match Dashboard.css */
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 6px; /* Match Dashboard.css */
+    transition: all 0.2s;
+    opacity: 0;
+    z-index: 10;
+    display: flex; /* Match Dashboard.css */
+    align-items: center; /* Match Dashboard.css */
+}
+
+.dashboard-item:hover .btn-delete-item {
+    opacity: 1;
+}
+
+.btn-delete-item:hover {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.3); /* Match Dashboard.css */
+    color: #ef4444;
+    transform: scale(1.1); /* Match Dashboard.css */
+}
+
+.btn-icon-sm {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-icon-sm:hover {
+    color: var(--accent-danger);
+    background: rgba(244, 63, 94, 0.1);
+}
+
+.btn-action {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    color: var(--accent-primary);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-action:hover {
+    background: rgba(99, 102, 241, 0.2);
+    transform: translateY(-1px);
+}
+
+.btn-back {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.btn-back:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+}
+
+.saving-indicator {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: 10px;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+
+.empty-dashboard {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+}
+
+.text-widget {
+    white-space: pre-wrap;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    line-height: 1.5;
+}
+
+/* React Grid Layout Overrides */
+.react-grid-item.react-grid-placeholder {
+    background: rgba(99, 102, 241, 0.1) !important;
+    border: 1px dashed var(--accent-primary) !important;
+    border-radius: 8px !important;
+    opacity: 0.5 !important;
+}
+
+.react-resizable-handle {
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+
+.dashboard-item:hover .react-resizable-handle {
+    opacity: 1;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Modal Styles for Delete Confirmation */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background: #0f111a; 
+    width: 400px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    color: var(--text-primary);
+    font-size: 20px;
+    margin-bottom: 12px;
+}
+
+.modal-content p {
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+}
+
+.btn-cancel {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+.btn-cancel:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.btn-confirm-delete {
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.5);
+    color: #fca5a5;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+.btn-confirm-delete:hover {
+    background: #ef4444;
+    color: #fff;
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+}
+
+.btn-save-icon {
+    position: relative;
+    bottom:8px;
+    left: 10px;
+    background: #1d1e3b; /* Indigo-500 approx, or user's purple */
+    border: 1px solid #4f46e5;
+    color: rgb(155, 155, 155);
+    border-radius: 8px; /* Slightly rounded corners like the image */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    width: 32px;
+    height: 32px;
+}
+
+.btn-save-icon:hover {
+    color: rgb(255, 255, 255);
+    background: #4f46e5; /* Indigo-600 */
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.4);
+    transform: scale(1.05);
+}
+
+.btn-save-icon:active {
+    transform: scale(0.95);
+}
+
+.toast-notification {
+    position: fixed;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 24px;
+    background: rgba(16, 185, 129, 0.2);
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    color: #34d399;
+    border-radius: 8px;
+    backdrop-filter: blur(12px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 500;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    animation: slideIn 0.3s ease-out;
+}
+
+.spinner-sm {
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(139, 92, 246, 0.3); /* Purple tint base */
+    border-top-color: #8b5cf6; /* Purple active */
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    display: inline-block;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.toast-notification.error {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #f87171;
+}
+
+@keyframes slideIn {
+    from { transform: translate(-50%, -20px); opacity: 0; }
+    to { transform: translate(-50%, 0); opacity: 1; }
+}

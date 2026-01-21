@@ -1,11 +1,11 @@
 import React, { useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import type { AppDispatch } from '../store';
-import { setSchema, setDatabaseState, setUploadId, resetSession, setUploadedDbPath } from '../features/appSlice'; // Added resetSession // Updated import
-import { Plus, Database, Loader2, History as HistoryIcon, ChevronDown } from 'lucide-react';
-import axios from '../api/axiosConfig';
-import LogoutButton from './LogoutButton';
+import type { AppDispatch } from '../../store';
+import { setSchema, setDatabaseState, setUploadId, resetSession, setUploadedDbPath } from '../../features/appSlice'; // Added resetSession // Updated import
+import { Plus, Database, Loader2, History as HistoryIcon, ChevronDown, LayoutDashboard, PieChart } from 'lucide-react';
+import axios from '../../api/axiosConfig';
+import LogoutButton from '../LogoutButton/LogoutButton';
 
 const Home: React.FC = () => {
   const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
@@ -105,6 +105,20 @@ const Home: React.FC = () => {
     marginTop: '16px'
   };
 
+  const headerButtonStyle: React.CSSProperties = {
+    background: 'rgba(255, 255, 255, 0.1)',
+    border: '1px solid rgba(255, 255, 255, 0.2)',
+    color: 'var(--text-secondary)',
+    padding: '8px 16px',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontSize: '14px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    transition: 'all 0.2s'
+  };
+
   return (
     <div style={containerStyle}>
        <div className="background-glow glow-blue" style={{ opacity: 0.5 }}></div>
@@ -138,20 +152,40 @@ const Home: React.FC = () => {
           <div style={{ position: 'absolute', top: '24px', right: '40px', display: 'flex', gap: '12px', alignItems: 'center' }}>
               <LogoutButton />
               <button
+                onClick={() => navigate('/custom-dashboard')}
+                style={headerButtonStyle}
+                 onMouseEnter={(e) => {
+                   e.currentTarget.style.borderColor = 'var(--accent-primary)';
+                   e.currentTarget.style.color = 'white';
+                   e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
+                 }}
+                 onMouseLeave={(e) => {
+                   e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)';
+                   e.currentTarget.style.color = 'var(--text-secondary)';
+                   e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+                 }}
+              >
+                 <LayoutDashboard size={16} /> Dashboard
+              </button>
+              <button
+                onClick={() => navigate('/dashboard')}
+                style={headerButtonStyle}
+                 onMouseEnter={(e) => {
+                   e.currentTarget.style.borderColor = 'var(--accent-primary)';
+                   e.currentTarget.style.color = 'white';
+                   e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
+                 }}
+                 onMouseLeave={(e) => {
+                   e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)';
+                   e.currentTarget.style.color = 'var(--text-secondary)';
+                   e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+                 }}
+              >
+                 <PieChart size={16} /> Dashboard
+              </button>
+              <button
                 onClick={() => navigate('/history')}
-                style={{
-                    background: 'rgba(255, 255, 255, 0.1)',
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
-                    color: 'var(--text-secondary)',
-                    padding: '8px 16px',
-                    borderRadius: '8px',
-                    cursor: 'pointer',
-                    fontSize: '14px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    transition: 'all 0.2s'
-                }}
+                style={headerButtonStyle}
                  onMouseEnter={(e) => {
                    e.currentTarget.style.borderColor = 'var(--accent-primary)';
                    e.currentTarget.style.color = 'white';

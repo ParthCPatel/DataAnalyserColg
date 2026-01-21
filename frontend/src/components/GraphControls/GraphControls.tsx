@@ -1,5 +1,5 @@
 import React from 'react';
-import CustomSelect from './CustomSelect';
+import CustomSelect from '../CustomSelect/CustomSelect';
 import { Database, AlignLeft, ArrowUpDown, List, Loader2 } from 'lucide-react';
 
 interface GraphControlsProps {

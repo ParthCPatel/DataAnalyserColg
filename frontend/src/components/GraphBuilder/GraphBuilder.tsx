@@ -1,11 +1,20 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { ChevronLeft, BarChart2, PieChart, TrendingUp, ScatterChart as ScatterIcon } from 'lucide-react';
-import axios from 'axios';
+import { useSelector } from 'react-redux';
+import type { RootState } from '../../store';
+import { ChevronLeft, BarChart2, PieChart, TrendingUp, ScatterChart as ScatterIcon, Pin, LayoutDashboard, Save } from 'lucide-react';
+import axios from '../../api/axiosConfig';
 import './GraphBuilder.css';
-import GraphControls from './GraphControls';
-import GraphChart from './GraphChart';
-import LogoutButton from './LogoutButton';
+import GraphControls from '../GraphControls/GraphControls';
+import GraphChart from '../GraphChart/GraphChart';
+import LogoutButton from '../LogoutButton/LogoutButton'; // Updated path // Assuming LogoutButton is moved or will be moved. Waiting for view_file confirmation if it was in the list. Wait, it was in the list to be moved.
+// Actually my previous list didn't include LogoutButton in the move command explicitly?
+// Let me check my previous run_command.
+// mkdir -p ... && mv frontend/src/components/GraphBuilder.tsx ...
+// I missed LogoutButton in the command but included it in the plan.
+// I will just update the paths assuming they are or will be moved.
+// Wait, listing said LogoutButton is in components root. I haven't moved it yet.
+// So relative import should be '../LogoutButton'.
 
 const CHART_TYPES = [
     { id: 'bar', label: 'Bar Chart', icon: BarChart2 },
@@ -19,6 +28,9 @@ const GraphBuilder: React.FC = () => {
     const { uploadId } = useParams<{ uploadId: string }>();
     const navigate = useNavigate();
     const location = useLocation();
+    const { currentUploadId } = useSelector((state: RootState) => state.app);
+    const effectiveUploadId = uploadId || currentUploadId;
+
     const { resultData, query } = location.state || {};
 
     const [loading, setLoading] = useState(false);
@@ -61,17 +73,17 @@ const GraphBuilder: React.FC = () => {
                 else if (cols.length > 1) setYAxis(cols[1]);
             }
 
-            if (!uploadId) return;
+            if (!effectiveUploadId) return;
             setLoading(true);
             try {
                 const historyRes = await axios.get('http://localhost:3000/api/history/sessions');
-                const session = historyRes.data.find((s: any) => s.upload._id === uploadId);
+                const session = historyRes.data.find((s: any) => s.upload._id === effectiveUploadId);
                 if (session) {
                     setDbPath(session.upload.path);
                     const stateRes = await axios.post('http://localhost:3000/api/sandbox', {
                          dbFilePath: session.upload.path,
                          question: "", 
-                         uploadId: uploadId
+                         uploadId: effectiveUploadId
                     });
                      if (stateRes.data.databaseState) {
                         setDbState(stateRes.data.databaseState);
@@ -86,7 +98,7 @@ const GraphBuilder: React.FC = () => {
             finally { setLoading(false); }
          };
          init();
-    }, [uploadId, resultData]);
+    }, [effectiveUploadId, resultData]);
 
     // Update columns when table selected
     useEffect(() => {
@@ -200,7 +212,7 @@ const GraphBuilder: React.FC = () => {
             const res = await axios.post('http://localhost:3000/api/sandbox', {
                 dbFilePath: dbPath,
                 question: prompt,
-                uploadId: uploadId,
+                uploadId: effectiveUploadId,
                 restrictedColumns: selectedTable === 'all' ? [] : [xAxis, yAxis]
             });
 
@@ -237,8 +249,71 @@ const GraphBuilder: React.FC = () => {
         }
     };
 
+    const [toast, setToast] = useState<{msg: string, type: 'success' | 'error'} | null>(null);
+
+    useEffect(() => {
+        if (toast) {
+            const timer = setTimeout(() => setToast(null), 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [toast]);
+
+    const handleSaveGraph = async () => {
+        if (!graphData.length) return;
+        try {
+            await axios.post('/saved-graphs', {
+                title: `Graph: ${xAxis} vs ${yAxis}`,
+                content: {
+                    data: processedData,
+                    chartType,
+                    xAxis,
+                    yAxis
+                }
+            });
+            setToast({ msg: "Graph saved to library!", type: 'success' });
+        } catch (err) {
+            console.error(err);
+            setToast({ msg: "Failed to save graph", type: 'error' });
+        }
+    };
+
+    const handlePinToDashboard = async () => {
+        if (!graphData || graphData.length === 0) {
+            setToast({ msg: "No data to pin!", type: 'error' });
+            return;
+        }
+        try {
+            await axios.post('/dashboard/item', {
+                type: 'graph',
+                title: `Graph: ${xAxis} vs ${yAxis}`,
+                content: {
+                    data: processedData,
+                    chartType,
+                    xAxis,
+                    yAxis
+                },
+                layout: {
+                    w: 4,
+                    h: 11,
+                    minW: 4,
+                    minH: 11
+                }
+            });
+            setToast({ msg: "Pinned to Dashboard successfully!", type: 'success' });
+        } catch (err) {
+            console.error(err);
+            setToast({ msg: "Failed to pin to dashboard", type: 'error' });
+        }
+    };
+
     return (
         <div className="graph-page">
+             {toast && (
+                 <div className={`toast-notification ${toast.type}`}>
+                     {toast.type === 'success' ? <Pin size={16} /> : null}
+                     {toast.msg}
+                 </div>
+             )}
              <div className="graph-header">
                 <button onClick={() => navigate('/history')} className="btn-back">
                     <ChevronLeft size={16} /> Back to History
@@ -246,7 +321,24 @@ const GraphBuilder: React.FC = () => {
                 <div style={{ marginLeft: '16px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '12px' }}>
                      <span>{query ? `Result: ${query.length > 40 ? query.substring(0,40)+'...' : query}` : 'Graph Builder'}</span>
                 </div>
-                <LogoutButton style={{ marginLeft: 'auto' }} />
+                
+
+
+                <div style={{ flex: 1 }}></div>
+                 {graphData.length > 0 && (
+                    <>
+                        <button onClick={handleSaveGraph} className="btn-back" style={{ marginRight: '12px', color: 'var(--accent-primary)', borderColor: 'rgba(99, 102, 241, 0.3)', background: 'rgba(99, 102, 241, 0.1)', border: '1px solid' }}>
+                            <Save size={16} /> Save to Library
+                        </button>
+                        <button onClick={handlePinToDashboard} className="btn-back" style={{ marginRight: '12px', color: 'var(--accent-primary)', borderColor: 'rgba(99, 102, 241, 0.3)', background: 'rgba(99, 102, 241, 0.1)', border: '1px solid' }}>
+                            <Pin size={16} /> Pin to Dashboard
+                        </button>
+                    </>
+                 )}
+                 <button onClick={() => navigate('/custom-dashboard')} className="btn-back" style={{ marginRight: '12px' }}>
+                     <LayoutDashboard size={16} /> Dashboard
+                 </button>
+                <LogoutButton />
              </div>
 
              <div className="graph-container">

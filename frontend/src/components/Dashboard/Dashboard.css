@@ -43,6 +43,13 @@
   display: flex;
   align-items: center;
   gap: 6px;
+  transition: all 0.2s;
+}
+
+.btn-history:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
 }
 
 .btn-new-upload {
@@ -53,6 +60,13 @@
   border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
+  transition: all 0.2s;
+}
+
+.btn-new-upload:hover {
+  background: var(--accent-secondary);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+  transform: translateY(-1px);
 }
 
 /* Tables */

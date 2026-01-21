@@ -9,11 +9,12 @@ interface GraphChartProps {
     chartType: string;
     xAxis: string;
     yAxis: string;
+    enableAnimation?: boolean;
 }
 
 const COLORS = ['#6366f1', '#8b5cf6', '#ec4899', '#f43f5e', '#facc15', '#10b981', '#3b82f6'];
 
-const GraphChart: React.FC<GraphChartProps> = ({ data, chartType, xAxis, yAxis }) => {
+const GraphChart: React.FC<GraphChartProps> = ({ data, chartType, xAxis, yAxis, enableAnimation = true }) => {
     
     if (!data || data.length === 0) {
         return <div className="graph-placeholder">No data to display</div>;
@@ -21,7 +22,7 @@ const GraphChart: React.FC<GraphChartProps> = ({ data, chartType, xAxis, yAxis }
 
     const CommonProps = {
         data: data,
-        margin: { top: 20, right: 30, left: 20, bottom: 50 }
+        margin: { top: 20, right: 30, left: 20, bottom: 50 },
     };
 
     const XAxisProps = {
@@ -49,7 +50,7 @@ const GraphChart: React.FC<GraphChartProps> = ({ data, chartType, xAxis, yAxis }
                             labelFormatter={(label) => label.split('__')[0]}
                         />
                         <Legend />
-                        <Bar dataKey={yAxis} fill="#6366f1" radius={[4, 4, 0, 0]} />
+                        <Bar dataKey={yAxis} fill="#6366f1" radius={[4, 4, 0, 0]} isAnimationActive={enableAnimation} />
                     </BarChart>
                 </ResponsiveContainer>
             );
@@ -62,7 +63,7 @@ const GraphChart: React.FC<GraphChartProps> = ({ data, chartType, xAxis, yAxis }
                         <YAxis {...YAxisProps} />
                          <Tooltip contentStyle={{ backgroundColor: '#1f2937', borderColor: '#374151' }} />
                         <Legend />
-                         <Line type="monotone" dataKey={yAxis} stroke="#8b5cf6" strokeWidth={2} dot={{ fill: '#8b5cf6', r: 4 }} activeDot={{ r: 6 }} legendType="circle" />
+                         <Line type="monotone" dataKey={yAxis} stroke="#8b5cf6" strokeWidth={2} dot={{ fill: '#8b5cf6', r: 4 }} activeDot={{ r: 6 }} legendType="circle" isAnimationActive={enableAnimation} />
                     </LineChart>
                 </ResponsiveContainer>
             );
@@ -75,7 +76,7 @@ const GraphChart: React.FC<GraphChartProps> = ({ data, chartType, xAxis, yAxis }
                         <YAxis {...YAxisProps} />
                          <Tooltip contentStyle={{ backgroundColor: '#1f2937', borderColor: '#374151' }} />
                         <Legend />
-                        <Area type="monotone" dataKey={yAxis} stroke="#10b981" fill="#10b981" fillOpacity={0.3} />
+                        <Area type="monotone" dataKey={yAxis} stroke="#10b981" fill="#10b981" fillOpacity={0.3} isAnimationActive={enableAnimation} />
                     </AreaChart>
                 </ResponsiveContainer>
             );
@@ -92,7 +93,7 @@ const GraphChart: React.FC<GraphChartProps> = ({ data, chartType, xAxis, yAxis }
                              labelFormatter={(label) => typeof label === 'string' ? label.split('__')[0] : label}
                          />
                         <Legend />
-                        <Scatter name={yAxis} data={data} fill="#ec4899" />
+                        <Scatter name={yAxis} data={data} fill="#ec4899" isAnimationActive={enableAnimation} />
                     </ScatterChart>
                 </ResponsiveContainer>
             );
@@ -110,6 +111,7 @@ const GraphChart: React.FC<GraphChartProps> = ({ data, chartType, xAxis, yAxis }
                             fill="#8884d8"
                             dataKey={yAxis} // Value
                             nameKey={xAxis} // Label
+                            isAnimationActive={enableAnimation}
                         >
                             {data.map((_entry, index) => (
                                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />

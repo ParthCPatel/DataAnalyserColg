@@ -1,0 +1,93 @@
+@media print {
+    @page {
+        margin: 5mm; 
+        size: landscape; 
+    }
+    
+    body {
+        margin: 0;
+        padding: 0;
+        background-color: #020617 !important;
+        color: #f8fafc !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        /* Removed flex/centering to force Top-Left alignment */
+    }
+
+    .printable-dashboard-page {
+        background-color: #020617 !important;
+        color: #f8fafc !important;
+        min-height: 100vh;
+        
+        /* FIXED LAYOUT STRATEGY - TOP LEFT ALIGNMENT */
+        /* Force grid width (1200px) and scale down to fit paper (75% -> 900px wide) */
+        width: 1200px !important;
+        max-width: 1200px !important;
+        zoom: 0.87; 
+        
+        margin: 0 !important; /* No auto margin, just strict 0 */
+        padding: 0 !important;
+        
+        overflow: visible !important;
+        transform-origin: top left; /* Ensure it scales from top-left */
+    }
+
+    .printable-dashboard-page .dashboard-item {
+        background-color: #1e293b !important;
+        border: 1px solid #334155 !important;
+        color: #f8fafc !important;
+        box-shadow: none !important;
+        page-break-inside: avoid; /* Try to prevent items splitting across pages */
+    }
+
+    .printable-dashboard-page .item-header {
+        color: #f8fafc !important;
+        border-bottom: 1px solid #334155 !important;
+    }
+}
+
+/* Default (Screen) View - Dark Theme matching App */
+.printable-dashboard-page {
+    width: 100%;
+    min-height: 100vh;
+    background-color: var(--bg-primary); /* Dark background */
+    color: var(--text-primary);
+    padding: 20px;
+}
+
+.printable-dashboard-page .react-grid-item {
+    transition: none !important; 
+}
+
+.printable-dashboard-page .recharts-responsive-container {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.printable-dashboard-page .dashboard-item {
+    /* Glassmorphism from index.css */
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.printable-dashboard-page .item-header {
+    margin-bottom: 12px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 8px;
+}
+
+.printable-dashboard-page .item-content {
+    flex: 1;
+    min-height: 0;
+    color: var(--text-secondary);
+}

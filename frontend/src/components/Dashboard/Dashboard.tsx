@@ -1,12 +1,12 @@
 import React, { useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
-import type { AppDispatch, RootState } from "../store"
-import { AlertCircle, CheckCircle2, Database, Loader2, Send, Table, History as HistoryIcon, Trash2, BarChart2, ChevronDown, Plus, Sparkles } from "lucide-react"
-import { setQuestion, executeQuery, deleteQuery, appendDatabase, deleteTable, analyzeTable } from "../features/appSlice"
-import AnalysisModal from "./AnalysisModal"
+import type { AppDispatch, RootState } from "../../store"
+import { AlertCircle, CheckCircle2, Database, Loader2, Send, Table, History as HistoryIcon, Trash2, BarChart2, ChevronDown, Plus, Sparkles, LayoutDashboard } from "lucide-react"
+import { setQuestion, executeQuery, deleteQuery, appendDatabase, deleteTable, analyzeTable } from "../../features/appSlice"
+import AnalysisModal from "../AnalysisModal/AnalysisModal"
 import "./Dashboard.css"
-import LogoutButton from './LogoutButton';
+import LogoutButton from '../LogoutButton/LogoutButton'; // Updated path
 
 // Sub-component for individual tables with pagination
 const PaginatedTable = ({ 
@@ -164,6 +164,12 @@ const PaginatedResultTable = ({ data }: { data: any[] }) => {
 const Dashboard: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  
+  // Clear input on mount
+  React.useEffect(() => {
+      dispatch(setQuestion(''));
+  }, [dispatch]);
+
   // Using tableStates primarily
   const { tableStates, queryHistory, loading, error, question, databaseState, currentUploadId, analysisResult, analysisLoading } = useSelector(
     (state: RootState) => state.app,
@@ -390,6 +396,23 @@ const Dashboard: React.FC = () => {
                        </div>
                    </>
                )}
+
+
+
+                <button
+                   onClick={() => navigate('/graph-builder')}
+                   className="btn-history"
+                   style={{ marginRight: '8px' }}
+                >
+                   <BarChart2 size={16} /> Add Graph
+                </button>
+                <button
+                   onClick={() => navigate('/custom-dashboard')}
+                   className="btn-history"
+                   style={{ marginRight: '8px' }}
+                >
+                   <LayoutDashboard size={16} /> Dashboard
+                </button>
                <button
                   onClick={() => navigate('/history')}
                   className="btn-history"

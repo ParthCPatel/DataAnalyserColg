@@ -2,7 +2,8 @@ import axios from "axios";
 
 // Create a custom instance or configure the default one
 // We'll configure the default one for simplicity with existing code
-axios.defaults.baseURL = "http://localhost:3000/api";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+axios.defaults.baseURL = `${API_BASE_URL}/api`;
 
 axios.interceptors.request.use(
   (config) => {
