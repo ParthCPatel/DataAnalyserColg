@@ -1,7 +1,7 @@
 import { PromptTemplate } from "@langchain/core/prompts";
 
 const SQL_GENERATION_PROMPT = new PromptTemplate({
-    template: `
+  template: `
 You are a SQL query generator. Given a natural language question, generate a SQL query that answers the question.
 
 Rules:
@@ -28,11 +28,11 @@ Feedback from previous attempt (if any): {feedback}
 Remember: If you need a column that is not in "Available Columns", you MUST return the JSON error.
 Query:
 `,
-    inputVariables: ["question", "schema", "feedback", "restrictedColumns"],
+  inputVariables: ["question", "schema", "feedback", "restrictedColumns"],
 });
 
 export const SQL_VALIDATION_PROMPT = new PromptTemplate({
-    template: `
+  template: `
     You are a SQL validator. Given a SQL query and database schema, analyze if the query is valid and follows best practices.
     
     Schema: {schema}
@@ -63,11 +63,11 @@ export const SQL_VALIDATION_PROMPT = new PromptTemplate({
     - valid: boolean
     - reasoning: string explanation
     `,
-    inputVariables: ["schema", "query"],
+  inputVariables: ["schema", "query"],
 });
 
 export const RELEVANCE_CHECK_PROMPT = new PromptTemplate({
-    template: `
+  template: `
     You are a database expert. Your task is to determine if a natural language question can be answered using ONLY the provided database schema.
     
     Schema:
@@ -88,12 +88,11 @@ export const RELEVANCE_CHECK_PROMPT = new PromptTemplate({
     - relevant: boolean
     - reasoning: string explanation
     `,
-    inputVariables: ["schema", "question"],
+  inputVariables: ["schema", "question"],
 });
 
-
 export const COLUMN_ANALYSIS_PROMPT = new PromptTemplate({
-    template: `
+  template: `
     You are a Database Schema Analyst.
     Your job is to identify EXACTLY which columns from the schema are required to answer the user's natural language question.
 
@@ -124,7 +123,26 @@ export const COLUMN_ANALYSIS_PROMPT = new PromptTemplate({
         "required_columns": ["column_name_1", "column_name_2"]
     }}
     `,
-    inputVariables: ["schema", "question"],
+  inputVariables: ["schema", "question"],
+});
+
+export const GRAPH_ANALYSIS_PROMPT = new PromptTemplate({
+  template: `
+    You are a Data Analyst. Analyze the following graph data and provide a concise summary of the key insights.
+
+    Graph Title: {title}
+    
+    Data:
+    {data}
+
+    Instructions:
+    1. Identify the most significant trends, peaks, or outliers.
+    2. Explain what this data signifies in simple terms.
+    3. Keep the "Answer" short, professional, and actionable (2-3 sentences).
+
+    Response:
+    `,
+  inputVariables: ["title", "data"],
 });
 
 export default SQL_GENERATION_PROMPT;
