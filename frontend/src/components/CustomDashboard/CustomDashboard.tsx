@@ -100,12 +100,18 @@ const CustomDashboard: React.FC = () => {
         }
     };
 
-    const saveDashboard = useCallback(async (currentItems: DashboardItem[]) => {
+    const saveDashboard = useCallback(async (currentItems: DashboardItem[], showToast = false) => {
         try {
             setSaving(true);
             await axios.post('/dashboard/save', { items: currentItems });
+            if (showToast) {
+                setToast({ msg: 'Dashboard layout saved!', type: 'success' });
+            }
         } catch (err) {
             console.error("Failed to save layout", err);
+            if (showToast) {
+                setToast({ msg: 'Failed to save layout.', type: 'error' });
+            }
         } finally {
             setSaving(false);
         }
@@ -338,10 +344,20 @@ const CustomDashboard: React.FC = () => {
                      <button onClick={() => navigate('/all-graphs')} className="btn-action">
                         <BarChart2 size={16} /> Add Graph
                     </button>
-                    <button onClick={() => window.open('/custom-dashboard/print', '_blank')} className="btn-action">
+                    <button onClick={() => saveDashboard(items, true)} className="btn-action" disabled={saving}>
+                        {saving ? (
+                            <>
+                                <div className="spinner-sm"></div> Saving...
+                            </>
+                        ) : (
+                            <>
+                                <Save size={16} /> Save Layout
+                            </>
+                        )}
+                    </button>
+                    <button onClick={() => navigate('/custom-dashboard/print')} className="btn-action">
                         <Printer size={16} /> Print View
                     </button>
-                    {saving && <span className="saving-indicator"><Save size={14} /> Saving...</span>}
                 </div>
             </div>
 

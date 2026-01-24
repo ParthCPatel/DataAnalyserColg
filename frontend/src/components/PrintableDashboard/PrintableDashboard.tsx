@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Printer, ChevronLeft } from 'lucide-react';
 import { Responsive, WidthProvider } from 'react-grid-layout/legacy';
 import 'react-grid-layout/css/styles.css';
 import axios from '../../api/axiosConfig';
@@ -23,6 +25,7 @@ interface DashboardItem {
 }
 
 const PrintableDashboard: React.FC = () => {
+    const navigate = useNavigate();
     const [items, setItems] = useState<DashboardItem[]>([]);
     const [layouts, setLayouts] = useState<any>({ lg: [] });
     const [loading, setLoading] = useState(true);
@@ -31,16 +34,7 @@ const PrintableDashboard: React.FC = () => {
         fetchDashboard();
     }, []);
 
-    // Auto-print effect once loaded
-    useEffect(() => {
-        if (!loading && items.length > 0) {
-            // Small delay to ensure charts rendering triggers
-            const timer = setTimeout(() => {
-                window.print();
-            }, 2500);
-            return () => clearTimeout(timer);
-        }
-    }, [loading, items]);
+    // Auto-print effect removed as per user request
 
     const fetchDashboard = async () => {
         try {
@@ -101,7 +95,30 @@ const PrintableDashboard: React.FC = () => {
     if (loading) return <div style={{ padding: 40, textAlign: 'center' }}>Preparing document...</div>;
 
     return (
-        <div className="printable-dashboard-page">
+        <div className="printable-dashboard-page" style={{ paddingTop: '80px' }}>
+            <button
+                onClick={() => navigate(-1)}
+                className="no-print"
+                style={{
+                    position: 'fixed',
+                    top: '20px',
+                    right: '30px',
+                    zIndex: 9999,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    padding: '8px 16px',
+                    backgroundColor: 'rgba(30, 41, 59, 0.8)',
+                    color: '#f8fafc',
+                    border: '1px solid #334155',
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    backdropFilter: 'blur(4px)'
+                }}
+            >
+                <ChevronLeft size={16} /> Back
+            </button>
+
             <ResponsiveGridLayout
                 className="layout"
                 layouts={layouts}
@@ -124,6 +141,41 @@ const PrintableDashboard: React.FC = () => {
                     </div>
                 ))}
             </ResponsiveGridLayout>
+
+            {/* Manual Print Button */}
+            {!loading && (
+                <button
+                    onClick={() => window.print()}
+                    style={{
+                        position: 'fixed',
+                        bottom: '30px',
+                        right: '30px',
+                        padding: '12px 24px',
+                        backgroundColor: '#5465FF',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '24px',
+                        fontSize: '16px',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        zIndex: 9999
+                    }}
+                    className="no-print"
+                >
+                    <Printer size={20} /> Print
+                </button>
+            )}
+            <style>{`
+                @media print {
+                    .no-print {
+                        display: none !important;
+                    }
+                }
+            `}</style>
         </div>
     );
 };
