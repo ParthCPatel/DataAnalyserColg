@@ -6,6 +6,7 @@ import { setSchema, setDatabaseState, setUploadId, resetSession, setUploadedDbPa
 import { Plus, Database, Loader2, History as HistoryIcon, ChevronDown, LayoutDashboard, PieChart } from 'lucide-react';
 import axios from '../../api/axiosConfig';
 import LogoutButton from '../LogoutButton/LogoutButton';
+import { BarChart3 } from 'lucide-react';
 
 const Home: React.FC = () => {
   const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
@@ -181,7 +182,7 @@ const Home: React.FC = () => {
                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
                  }}
               >
-                 <PieChart size={16} /> Dashboard
+                 <BarChart3 size={16} /> Home
               </button>
               <button
                 onClick={() => navigate('/history')}

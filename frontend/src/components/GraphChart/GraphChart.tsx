@@ -1,7 +1,7 @@
 import React from 'react';
 import { 
-  BarChart, Bar, LineChart, Line, PieChart as RePieChart, Pie, Cell, 
-  XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ScatterChart, Scatter, AreaChart, Area
+  BarChart, Bar, LineChart, Line, 
+  XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area
 } from 'recharts';
 
 interface GraphChartProps {
@@ -12,9 +12,8 @@ interface GraphChartProps {
     enableAnimation?: boolean;
 }
 
-const COLORS = ['#6366f1', '#8b5cf6', '#ec4899', '#f43f5e', '#facc15', '#10b981', '#3b82f6'];
 
-const GraphChart: React.FC<GraphChartProps> = ({ data, chartType, xAxis, yAxis, enableAnimation = true }) => {
+const GraphChart: React.FC<GraphChartProps> = ({ data, chartType, yAxis, enableAnimation = true }) => {
     
     if (!data || data.length === 0) {
         return <div className="graph-placeholder">No data to display</div>;
@@ -78,48 +77,6 @@ const GraphChart: React.FC<GraphChartProps> = ({ data, chartType, xAxis, yAxis, 
                         <Legend />
                         <Area type="monotone" dataKey={yAxis} stroke="#10b981" fill="#10b981" fillOpacity={0.3} isAnimationActive={enableAnimation} />
                     </AreaChart>
-                </ResponsiveContainer>
-            );
-        case 'scatter':
-             return (
-                 <ResponsiveContainer width="100%" height="100%">
-                    <ScatterChart {...CommonProps}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                         <XAxis {...XAxisProps} type="category" textAnchor="end" />
-                         <YAxis {...YAxisProps} type="number" />
-                         <Tooltip 
-                             cursor={{ strokeDasharray: '3 3' }} 
-                             contentStyle={{ backgroundColor: '#1f2937', borderColor: '#374151' }} 
-                             labelFormatter={(label) => typeof label === 'string' ? label.split('__')[0] : label}
-                         />
-                        <Legend />
-                        <Scatter name={yAxis} data={data} fill="#ec4899" isAnimationActive={enableAnimation} />
-                    </ScatterChart>
-                </ResponsiveContainer>
-            );
-         case 'pie':
-            return (
-                <ResponsiveContainer width="100%" height="100%">
-                    <RePieChart>
-                        <Pie
-                            data={data}
-                            cx="50%"
-                            cy="50%"
-                            labelLine={false}
-                            label={({ percent }) => `${((percent || 0) * 100).toFixed(0)}%`}
-                            outerRadius={150}
-                            fill="#8884d8"
-                            dataKey={yAxis} // Value
-                            nameKey={xAxis} // Label
-                            isAnimationActive={enableAnimation}
-                        >
-                            {data.map((_entry, index) => (
-                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                            ))}
-                        </Pie>
-                        <Tooltip contentStyle={{ backgroundColor: '#1f2937', borderColor: '#374151' }} />
-                        <Legend />
-                    </RePieChart>
                 </ResponsiveContainer>
             );
         default:

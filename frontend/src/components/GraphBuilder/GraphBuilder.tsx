@@ -2,26 +2,17 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../../store';
-import { ChevronLeft, BarChart2, PieChart, TrendingUp, ScatterChart as ScatterIcon, Pin, LayoutDashboard, Save } from 'lucide-react';
+import { ChevronLeft, BarChart2, TrendingUp, Pin, LayoutDashboard, Save, BarChart3 } from 'lucide-react';
 import axios from '../../api/axiosConfig';
 import './GraphBuilder.css';
 import GraphControls from '../GraphControls/GraphControls';
 import GraphChart from '../GraphChart/GraphChart';
-import LogoutButton from '../LogoutButton/LogoutButton'; // Updated path // Assuming LogoutButton is moved or will be moved. Waiting for view_file confirmation if it was in the list. Wait, it was in the list to be moved.
-// Actually my previous list didn't include LogoutButton in the move command explicitly?
-// Let me check my previous run_command.
-// mkdir -p ... && mv frontend/src/components/GraphBuilder.tsx ...
-// I missed LogoutButton in the command but included it in the plan.
-// I will just update the paths assuming they are or will be moved.
-// Wait, listing said LogoutButton is in components root. I haven't moved it yet.
-// So relative import should be '../LogoutButton'.
+import LogoutButton from '../LogoutButton/LogoutButton';
 
 const CHART_TYPES = [
     { id: 'bar', label: 'Bar Chart', icon: BarChart2 },
     { id: 'line', label: 'Line Chart', icon: TrendingUp },
     { id: 'area', label: 'Area Chart', icon: TrendingUp },
-    { id: 'pie', label: 'Pie Chart', icon: PieChart },
-    { id: 'scatter', label: 'Scatter Plot', icon: ScatterIcon },
 ];
 
 const GraphBuilder: React.FC = () => {
@@ -322,23 +313,36 @@ const GraphBuilder: React.FC = () => {
                      <span>{query ? `Result: ${query.length > 40 ? query.substring(0,40)+'...' : query}` : 'Graph Builder'}</span>
                 </div>
                 
-
-
                 <div style={{ flex: 1 }}></div>
-                 {graphData.length > 0 && (
-                    <>
-                        <button onClick={handleSaveGraph} className="btn-back" style={{ marginRight: '12px', color: 'var(--accent-primary)', borderColor: 'rgba(99, 102, 241, 0.3)', background: 'rgba(99, 102, 241, 0.1)', border: '1px solid' }}>
-                            <Save size={16} /> Save to Library
-                        </button>
-                        <button onClick={handlePinToDashboard} className="btn-back" style={{ marginRight: '12px', color: 'var(--accent-primary)', borderColor: 'rgba(99, 102, 241, 0.3)', background: 'rgba(99, 102, 241, 0.1)', border: '1px solid' }}>
-                            <Pin size={16} /> Pin to Dashboard
-                        </button>
-                    </>
-                 )}
-                 <button onClick={() => navigate('/custom-dashboard')} className="btn-back" style={{ marginRight: '12px' }}>
-                     <LayoutDashboard size={16} /> Dashboard
-                 </button>
-                <LogoutButton />
+                 <div className="header-actions">
+                     {graphData.length > 0 && (
+                        <>
+                            <button onClick={handleSaveGraph} className="btn-back">
+                                <Save size={16} /> Save to Library
+                            </button>
+                            <button onClick={handlePinToDashboard} className="btn-back">
+                                <Pin size={16} /> Pin to Dashboard
+                            </button>
+                        </>
+                     )}
+                      <button onClick={() => navigate('/dashboard')} className="btn-back">
+                         <BarChart3 size={16} /> Home
+                      </button>
+                     <button onClick={() => navigate('/custom-dashboard')} className="btn-back">
+                         <LayoutDashboard size={16} /> Dashboard
+                     </button>
+                    
+                     <button onClick={() => navigate('/all-graphs')} className="btn-back">
+                        <BarChart2 size={16} /> All Graphs
+                     </button>
+                     <button 
+                       onClick={() => navigate('/')} 
+                       className="btn-new-upload"
+                    >
+                       New Upload
+                    </button>
+                    <LogoutButton />
+                 </div>
              </div>
 
              <div className="graph-container">

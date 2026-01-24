@@ -328,7 +328,7 @@ const Dashboard: React.FC = () => {
         <div className="dashboard-header">
            <h2 className="dashboard-title">Data Explorer</h2>
            <div className="header-actions">
-               <LogoutButton />
+               
                {/* Analyze Selected Button */}
                {selectedTables.size > 0 && (
                    <button 
@@ -425,6 +425,7 @@ const Dashboard: React.FC = () => {
                >
                   New Upload
                </button>
+               <LogoutButton />
            </div>
         </div>
         <p className="instruction-text" style={{ color: 'rgba(255,255,255,0.6)', marginTop: '-10px', marginBottom: '20px', fontSize: '0.9rem' }}>

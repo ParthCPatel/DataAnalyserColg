@@ -54,19 +54,21 @@
 }
 
 .btn-home:hover {
-  background: rgba(255, 255, 255, 0.2);
+  /* background: rgba(255, 255, 255, 0.2); */
   color: var(--text-primary);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.4);
 }
 
 .btn-new-upload {
-  background: var(--accent-primary);
-  border: none;
-  color: white;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--text-secondary);
   padding: 8px 16px;
   border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+  /* box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25); */
 }
 
 /* Loading Spinner */

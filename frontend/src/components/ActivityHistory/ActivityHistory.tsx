@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import type { AppDispatch, RootState } from '../../store';
 import { fetchHistory, restoreSession, refreshDatabaseState } from '../../features/appSlice';
 import { FileText, Clock, ChevronRight, LayoutDashboard, Trash2, MessageSquare, Database, PieChart } from 'lucide-react';
+import { BarChart3 } from 'lucide-react';
 
 import "./ActivityHistory.css";
 import LogoutButton from '../LogoutButton/LogoutButton'; // Updated path // Not moved yet or remains in root for now
@@ -83,7 +84,7 @@ const ActivityHistory: React.FC = () => {
                   onClick={() => navigate('/dashboard')}
                   className="btn-home"
                 >
-                   <PieChart size={16} /> Normal Dashboard
+                   <BarChart3 size={16} /> Home
                 </button>
                 <button 
                    onClick={() => navigate('/')} 

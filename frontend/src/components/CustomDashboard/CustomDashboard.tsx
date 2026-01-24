@@ -4,7 +4,7 @@ import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import axios from '../../api/axiosConfig';  // One level deeper
 import { debounce } from 'lodash';
-import { Save, Trash2, BarChart2, FileText, ChevronLeft, Sparkles, Pin, History, Printer } from 'lucide-react';
+import { Save, Trash2, BarChart2, FileText, ChevronLeft, Sparkles, Pin, History, Printer, BarChart3 } from 'lucide-react';
 
 import { useNavigate } from 'react-router-dom';
 import DashboardNote, { type DashboardNoteHandle } from '../DashboardNote/DashboardNote'; // Still in components/
@@ -329,15 +329,19 @@ const CustomDashboard: React.FC = () => {
             <div className="dashboard-header-bar">
                 <h2>Custom Dashboard</h2>
                 <div className="header-actions">
+                    <button 
+                   onClick={() => navigate('/')} 
+                   className="btn-new-upload"
+                >
+                   New Upload
+                </button>
                      <button onClick={() => navigate('/dashboard')} className="btn-back" style={{ marginRight: '12px' }}>
-                        <BarChart2 size={16} /> Dashboard
+                        <BarChart3 size={16} /> Home
                     </button>
                      <button onClick={() => navigate('/history')} className="btn-back" style={{ marginRight: '12px' }}>
                         <History size={16} /> History
                     </button>
-                     <button onClick={() => navigate('/')} className="btn-back">
-                        <ChevronLeft size={16} /> Back to Home
-                    </button>
+                     
                      <button onClick={() => addItem('text')} className="btn-action">
                         <FileText size={16} /> Add Text
                     </button>

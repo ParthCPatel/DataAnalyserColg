@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from '../../api/axiosConfig';
-import { ChevronLeft, Trash2, Pin, LayoutDashboard } from 'lucide-react';
+import { ChevronLeft, Trash2, Pin, LayoutDashboard, BarChart3 } from 'lucide-react';
 import GraphChart from '../GraphChart/GraphChart';
 import '../CustomDashboard/CustomDashboard.css'; // Reuse existing styles from sibling folder
 
@@ -88,11 +88,17 @@ const AllGraphs: React.FC = () => {
             <div className="dashboard-header-bar">
                 <h2>All Saved Graphs</h2>
                 <div className="header-actions">
-                     <button onClick={() => navigate('/custom-dashboard')} className="btn-back">
-                        <LayoutDashboard size={16} /> Dashboard
+                    <button 
+                        onClick={() => navigate('/')} 
+                        className="btn-new-upload"
+                    >
+                        New Upload
                     </button>
-                    <button onClick={() => navigate('/')} className="btn-back">
-                        <ChevronLeft size={16} /> Back to Home
+                    <button onClick={() => navigate('/dashboard')} className="btn-back" style={{ marginRight: '12px' }}>
+                        <BarChart3 size={16} /> Home
+                    </button>
+                    <button onClick={() => navigate('/custom-dashboard')} className="btn-back">
+                        <LayoutDashboard size={16} /> Dashboard
                     </button>
                 </div>
             </div>
