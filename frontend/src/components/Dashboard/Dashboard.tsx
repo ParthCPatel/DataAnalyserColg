@@ -2,11 +2,11 @@ import React, { useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import type { AppDispatch, RootState } from "../../store"
-import { AlertCircle, CheckCircle2, Database, Loader2, Send, Table, History as HistoryIcon, Trash2, BarChart2, ChevronDown, Plus, Sparkles, LayoutDashboard } from "lucide-react"
+import { AlertCircle, CheckCircle2, Database, Loader2, Send, Table, Trash2, ChevronDown, Plus, Sparkles, BarChart2 } from "lucide-react"
 import { setQuestion, executeQuery, deleteQuery, appendDatabase, deleteTable, analyzeTable } from "../../features/appSlice"
 import AnalysisModal from "../AnalysisModal/AnalysisModal"
 import "./Dashboard.css"
-import LogoutButton from '../LogoutButton/LogoutButton'; // Updated path
+
 
 // Sub-component for individual tables with pagination
 const PaginatedTable = ({ 
@@ -328,104 +328,80 @@ const Dashboard: React.FC = () => {
         <div className="dashboard-header">
            <h2 className="dashboard-title">Data Explorer</h2>
            <div className="header-actions">
-               
-               {/* Analyze Selected Button */}
-               {selectedTables.size > 0 && (
-                   <button 
-                       onClick={handleAnalyzeSelected}
-                       className="btn-history"
-                       style={{ borderColor: 'var(--accent-primary)', color: 'var(--accent-primary)', background: 'rgba(99, 102, 241, 0.1)', marginRight: '8px' }}
-                   >
-                       <Sparkles size={16} style={{ marginRight: 6 }} /> Analyze Selected ({selectedTables.size})
-                   </button>
-               )}
+                {/* Analyze Selected Button */}
+                {selectedTables.size > 0 && (
+                    <button 
+                        onClick={handleAnalyzeSelected}
+                        className="btn-history"
+                        style={{ borderColor: 'var(--accent-primary)', color: 'var(--accent-primary)', background: 'rgba(99, 102, 241, 0.1)' }}
+                    >
+                        <Sparkles size={16} style={{ marginRight: 6 }} /> Analyze Selected ({selectedTables.size})
+                    </button>
+                )}
 
-               {currentUploadId && (
-                   <>
-                       <input 
-                           type="file" 
-                           ref={appendFileInputRef}
-                           style={{ display: 'none' }}
-                           multiple
-                           accept=".csv"
-                           onChange={handleAppendFileChange}
-                       />
-                       
-                       <div style={{ position: 'relative', marginRight: '8px' }}>
-                           <button
-                               onClick={() => setShowAddMenu(!showAddMenu)}
-                               className="btn-history"
-                               title="Add Data Options"
-                               style={{ display: 'flex', alignItems: 'center' }}
-                           >
-                               <Database size={16} /> <span style={{ marginLeft: 8 }}>Add Data</span> <ChevronDown size={14} style={{ marginLeft: 4 }} />
-                           </button>
-                           
-                           {showAddMenu && (
-                               <div className="glass-panel" style={{
-                                   position: 'absolute', 
-                                   top: '100%', 
-                                   left: 0, 
-                                   zIndex: 50, 
-                                   marginTop: '6px', 
-                                   padding: '6px',
-                                   display: 'flex', 
-                                   flexDirection: 'column', 
-                                   gap: '4px',
-                                   minWidth: '180px',
-                                   background: 'var(--bg-secondary)',
-                                   border: '1px solid var(--border-color)',
-                                   boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
-                               }}>
-                                   <button 
-                                       onClick={() => handleAddOption(false)}
-                                       className="btn-history" 
-                                       style={{ justifyContent: 'flex-start', width: '100%', border: 'none', background: 'transparent', padding: '8px' }}
-                                   >
-                                       <Plus size={14} style={{ marginRight: 8 }}/> Standard Add
-                                   </button>
+                {currentUploadId && (
+                    <>
+                        <input 
+                            type="file" 
+                            ref={appendFileInputRef}
+                            style={{ display: 'none' }}
+                            multiple
+                            accept=".csv"
+                            onChange={handleAppendFileChange}
+                        />
+                        
+                        <div style={{ position: 'relative' }}>
+                            <button
+                                onClick={() => setShowAddMenu(!showAddMenu)}
+                                className="btn-history"
+                                title="Add Data Options"
+                                style={{ display: 'flex', alignItems: 'center' }}
+                            >
+                                <Database size={16} /> <span style={{ marginLeft: 8 }}>Add Data</span> <ChevronDown size={14} style={{ marginLeft: 4 }} />
+                            </button>
+                            
+                            {showAddMenu && (
+                                <div className="glass-panel" style={{
+                                    position: 'absolute', 
+                                    top: '100%', 
+                                    left: 0, 
+                                    zIndex: 50, 
+                                    marginTop: '6px', 
+                                    padding: '6px',
+                                    display: 'flex', 
+                                    flexDirection: 'column', 
+                                    gap: '4px',
+                                    minWidth: '180px',
+                                    background: 'var(--bg-secondary)',
+                                    border: '1px solid var(--border-color)',
+                                    boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
+                                }}>
                                     <button 
-                                       onClick={() => handleAddOption(true)}
-                                       className="btn-history"
-                                       style={{ justifyContent: 'flex-start', width: '100%', border: 'none', background: 'transparent', padding: '8px' }}
-                                   >
-                                       <Database size={14} style={{ marginRight: 8, color: 'var(--accent-primary)' }}/> Clean & Add
-                                   </button>
-                               </div>
-                           )}
-                       </div>
-                   </>
-               )}
+                                        onClick={() => handleAddOption(false)}
+                                        className="btn-history" 
+                                        style={{ justifyContent: 'flex-start', width: '100%', border: 'none', background: 'transparent', padding: '8px' }}
+                                    >
+                                        <Plus size={14} style={{ marginRight: 8 }}/> Standard Add
+                                    </button>
+                                     <button 
+                                        onClick={() => handleAddOption(true)}
+                                        className="btn-history"
+                                        style={{ justifyContent: 'flex-start', width: '100%', border: 'none', background: 'transparent', padding: '8px' }}
+                                    >
+                                        <Database size={14} style={{ marginRight: 8, color: 'var(--accent-primary)' }}/> Clean & Add
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </>
+                )}
 
-
-
-                <button
-                   onClick={() => navigate('/graph-builder')}
-                   className="btn-history"
-                   style={{ marginRight: '8px' }}
-                >
-                   <BarChart2 size={16} /> Add Graph
-                </button>
-                <button
-                   onClick={() => navigate('/custom-dashboard')}
-                   className="btn-history"
-                   style={{ marginRight: '8px' }}
-                >
-                   <LayoutDashboard size={16} /> Dashboard
-                </button>
-               <button
-                  onClick={() => navigate('/history')}
-                  className="btn-history"
-               >
-                   <HistoryIcon size={16} /> History
-               </button>
-               <button 
-                  onClick={() => navigate('/')} 
-                  className="btn-new-upload"
-               >
-                  New Upload
-               </button>
-               <LogoutButton />
+                 <button
+                    onClick={() => navigate('/graph-builder')}
+                    className="btn-history"
+                 >
+                    <BarChart2 size={16} /> Add Graph
+                 </button>
            </div>
         </div>
         <p className="instruction-text" style={{ color: 'rgba(255,255,255,0.6)', marginTop: '-10px', marginBottom: '20px', fontSize: '0.9rem' }}>

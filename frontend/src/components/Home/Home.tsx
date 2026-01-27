@@ -3,10 +3,8 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import type { AppDispatch } from '../../store';
 import { setSchema, setDatabaseState, setUploadId, resetSession, setUploadedDbPath } from '../../features/appSlice'; // Added resetSession // Updated import
-import { Plus, Database, Loader2, History as HistoryIcon, ChevronDown, LayoutDashboard, PieChart } from 'lucide-react';
+import { Plus, Database, Loader2, ChevronDown } from 'lucide-react';
 import axios from '../../api/axiosConfig';
-import LogoutButton from '../LogoutButton/LogoutButton';
-import { BarChart3 } from 'lucide-react';
 
 const Home: React.FC = () => {
   const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
@@ -77,14 +75,14 @@ const Home: React.FC = () => {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'flex-start',
-    paddingTop: '25vh',
-    height: '100vh',
-    width: '100vw',
+    justifyContent: 'center', // Center vertically
+    minHeight: 'calc(100vh - 64px)', // Account for navbar
+    width: '100%',
     background: 'var(--bg-primary)',
     color: 'var(--text-primary)',
     position: 'relative',
-    overflow: 'hidden'
+    overflow: 'hidden',
+    paddingBottom: '40px'
   };
 
   const buttonStyle: React.CSSProperties = {
@@ -104,20 +102,6 @@ const Home: React.FC = () => {
     boxShadow: '0 8px 30px rgba(99, 102, 241, 0.4)',
     transition: 'transform 0.2s, box-shadow 0.2s',
     marginTop: '16px'
-  };
-
-  const headerButtonStyle: React.CSSProperties = {
-    background: 'rgba(255, 255, 255, 0.1)',
-    border: '1px solid rgba(255, 255, 255, 0.2)',
-    color: 'var(--text-secondary)',
-    padding: '8px 16px',
-    borderRadius: '8px',
-    cursor: 'pointer',
-    fontSize: '14px',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    transition: 'all 0.2s'
   };
 
   return (
@@ -149,58 +133,8 @@ const Home: React.FC = () => {
             multiple
           />
 
-          {/* Header for View History Button */}
-          <div style={{ position: 'absolute', top: '24px', right: '40px', display: 'flex', gap: '12px', alignItems: 'center' }}>
-              <LogoutButton />
-              <button
-                onClick={() => navigate('/custom-dashboard')}
-                style={headerButtonStyle}
-                 onMouseEnter={(e) => {
-                   e.currentTarget.style.borderColor = 'var(--accent-primary)';
-                   e.currentTarget.style.color = 'white';
-                   e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
-                 }}
-                 onMouseLeave={(e) => {
-                   e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)';
-                   e.currentTarget.style.color = 'var(--text-secondary)';
-                   e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
-                 }}
-              >
-                 <LayoutDashboard size={16} /> Dashboard
-              </button>
-              <button
-                onClick={() => navigate('/dashboard')}
-                style={headerButtonStyle}
-                 onMouseEnter={(e) => {
-                   e.currentTarget.style.borderColor = 'var(--accent-primary)';
-                   e.currentTarget.style.color = 'white';
-                   e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
-                 }}
-                 onMouseLeave={(e) => {
-                   e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)';
-                   e.currentTarget.style.color = 'var(--text-secondary)';
-                   e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
-                 }}
-              >
-                 <BarChart3 size={16} /> Home
-              </button>
-              <button
-                onClick={() => navigate('/history')}
-                style={headerButtonStyle}
-                 onMouseEnter={(e) => {
-                   e.currentTarget.style.borderColor = 'var(--accent-primary)';
-                   e.currentTarget.style.color = 'white';
-                   e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
-                 }}
-                 onMouseLeave={(e) => {
-                   e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)';
-                   e.currentTarget.style.color = 'var(--text-secondary)';
-                   e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
-                 }}
-              >
-                 <HistoryIcon size={16} /> History
-              </button>
-          </div>
+          {/* Header buttons removed - moved to Global Navbar */}
+          <div style={{ height: '24px' }}></div>
 
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
               

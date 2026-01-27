@@ -4,7 +4,7 @@ import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import axios from '../../api/axiosConfig';  // One level deeper
 import { debounce } from 'lodash';
-import { Save, Trash2, BarChart2, FileText, ChevronLeft, Sparkles, Pin, History, Printer, BarChart3 } from 'lucide-react';
+import { Save, Trash2, BarChart2, FileText, Sparkles, Pin, Printer } from 'lucide-react';
 
 import { useNavigate } from 'react-router-dom';
 import DashboardNote, { type DashboardNoteHandle } from '../DashboardNote/DashboardNote'; // Still in components/
@@ -78,15 +78,29 @@ const CustomDashboard: React.FC = () => {
             setLoading(true);
             const res = await axios.get('/dashboard');
             if (res.data && res.data.items) {
-                const fetchedItems = res.data.items.map((item: any) => ({
-                    ...item,
-                    layout: { 
-                        ...item.layout, 
-                        i: item.id,
-                        minW: item.type === 'graph' ? (item.layout?.minW || 4) : (item.layout?.minW || 3),
-                        minH: item.type === 'graph' ? (item.layout?.minH || 11) : (item.layout?.minH || 3),
-                    } // Ensure 'i' matches 'id'
-                }));
+                const fetchedItems = res.data.items.map((item: any) => {
+                    // LEGACY CLARIFICATION:
+                    // Old System: rowHeight=30, margin=10. 1 row = 40px space.
+                    // New System: rowHeight=2, margin=0. 1 row = 2px space.
+                    // Scaling Factor: 20. 
+                    // Migration Check: If height is small (< 50), assume legacy and scale up.
+                    const isLegacy = (item.layout?.h || 0) < 50; 
+                    const scale = isLegacy ? 20 : 1;
+
+                    return {
+                        ...item,
+                        layout: { 
+                            ...item.layout, 
+                            i: item.id,
+                            x: item.layout.x, // Columns (width) haven't changed, 12 cols total
+                            w: item.layout.w,
+                            y: isLegacy ? (item.layout.y * scale) : item.layout.y,
+                            h: isLegacy ? (item.layout.h * scale) : item.layout.h,
+                            minW: item.type === 'graph' ? (item.layout?.minW || 4) : (item.layout?.minW || 3),
+                            minH: item.type === 'graph' ? 220 : 60, // Minimum height in 2px units (220 units = 440px, 60 units = 120px)
+                        } 
+                    };
+                });
                 setItems(fetchedItems);
                 
                 // Construct initial layout
@@ -173,7 +187,6 @@ const CustomDashboard: React.FC = () => {
 
     const addItem = async (type: 'text') => {
         try {
-            // Create persistent note first
             const noteRes = await axios.post('/notes', { content: '' });
             const content = { noteId: noteRes.data._id, text: '' };
 
@@ -183,19 +196,18 @@ const CustomDashboard: React.FC = () => {
                 content,
                 layout: {
                     x: 0,
-                    y: Infinity, // puts it at the bottom
+                    y: Infinity, 
                     w: 4,
-                    h: 4,
+                    h: 80, // Default height ~160px
                     minW: 3,
-                    minH: 3,
-                    i: 'placeholder-id-will-be-replaced' // overwritten by backend ID basically
+                    minH: 60, // Min height ~120px
+                    i: 'placeholder-id' 
                 }
             };
             const res = await axios.post('/dashboard/item', newItem);
             const savedItem = { ...res.data, layout: { ...res.data.layout, i: res.data.id } };
             
             setItems(prev => [...prev, savedItem]);
-            // Refresh dashboard to ensure full sync
             fetchDashboard();
         } catch (err) {
             console.error("Failed to add item", err);
@@ -214,10 +226,6 @@ const CustomDashboard: React.FC = () => {
     const handleAnalyzeGraph = async (item: DashboardItem) => {
         setAnalyzingItems(prev => new Set(prev).add(item.id));
         try {
-            // Optimistic feedback? 
-            // For now just basic flow
-            
-            // Format data for analysis (title + data points)
             const analysisPayload = {
                title: item.title,
                data: typeof item.content === 'object' && item.content.data ? item.content.data : item.content
@@ -226,13 +234,10 @@ const CustomDashboard: React.FC = () => {
             const response = await axios.post('/analysis/analyze-graph', analysisPayload);
             const analysisText = response.data.analysis;
             
-            // Create persistent note for the analysis
             const noteRes = await axios.post('/notes', { content: analysisText });
             
-            // Find a valid position below the current graph
             const newItemY = item.layout.y + item.layout.h;
 
-            // Add new note item to dashboard
             const newNote = {
                 type: 'text',
                 title: `Analysis: ${item.title}`,
@@ -240,18 +245,15 @@ const CustomDashboard: React.FC = () => {
                 layout: {
                     x: item.layout.x,
                     y: newItemY,
-                    w: item.layout.w, // Match graph width
-                    h: 4, // Default height for note
+                    w: item.layout.w, 
+                    h: 80, // 80 units = 160px
                     minW: 3, 
-                    minH: 3,
+                    minH: 60,
                     i: 'temp-id' 
                 }
             };
             
-            // Save to backend
             await axios.post('/dashboard/item', newNote);
-            
-            // Refresh dashboard
             await fetchDashboard();
             setToast({ msg: 'Analysis added to dashboard!', type: 'success' });
 
@@ -329,19 +331,6 @@ const CustomDashboard: React.FC = () => {
             <div className="dashboard-header-bar">
                 <h2>Custom Dashboard</h2>
                 <div className="header-actions">
-                    <button 
-                   onClick={() => navigate('/')} 
-                   className="btn-new-upload"
-                >
-                   New Upload
-                </button>
-                     <button onClick={() => navigate('/dashboard')} className="btn-back" style={{ marginRight: '12px' }}>
-                        <BarChart3 size={16} /> Home
-                    </button>
-                     <button onClick={() => navigate('/history')} className="btn-back" style={{ marginRight: '12px' }}>
-                        <History size={16} /> History
-                    </button>
-                     
                      <button onClick={() => addItem('text')} className="btn-action">
                         <FileText size={16} /> Add Text
                     </button>
@@ -368,64 +357,123 @@ const CustomDashboard: React.FC = () => {
             <div className="grid-container">
                 <ErrorBoundary>
                     {items.length > 0 && (
-                        <ResponsiveGridLayout
-                            className="layout"
-                            layouts={layouts}
-                            breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
-                            cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
-                            rowHeight={30}
-                            draggableHandle=".drag-handle"
-                            onLayoutChange={onLayoutChange}
-                            compactType="vertical"
-                            preventCollision={false}
-                        >
-                            {items.map(item => (
-                                <div key={item.id} className="dashboard-item glass-panel" data-grid={item.layout}>
-                                    <div className="item-header drag-handle">
-                                        <span className="item-title">{item.title}</span>
-                                        <div className="item-controls">
-                                            {item.type === 'graph' && (
-                                                <button 
-                                                    onClick={() => handleAnalyzeGraph(item)}
-                                                    className="btn-icon-sm"
-                                                    title="Analyze Graph with AI"
-                                                    style={{ color: '#8b5cf6' }} // Purple tint
-                                                    disabled={analyzingItems.has(item.id)}
-                                                >
-                                                    {analyzingItems.has(item.id) ? (
-                                                        <div className="spinner-sm"></div>
-                                                    ) : (
-                                                        <>
-                                                            <Sparkles size={14} /> Analyze
-                                                        </>
+                        <div className="dashboard-grid-wrapper" style={{ position: 'relative' }}>
+                            {/* Page Background Sections (Visual Experience) */}
+                            {(() => {
+                                const rowHeight = 2; 
+                                const PAGE_HEIGHT = 1058; // A4 px height at 0.75 zoom
+                                
+                                const maxGridBottom = items.reduce((max, item) => {
+                                    const bottom = (item.layout.y + item.layout.h) * rowHeight;
+                                    return Math.max(max, bottom);
+                                }, 0);
+
+                                // Always show at least one page, add more as content grows
+                                const numPages = Math.max(1, Math.ceil((maxGridBottom + 100) / PAGE_HEIGHT)); 
+
+                                const pages = [];
+                                for (let i = 0; i < numPages; i++) {
+                                    const topPos = i * PAGE_HEIGHT;
+                                    pages.push(
+                                        <div 
+                                            key={`page-${i}`}
+                                            className="dashboard-page-background"
+                                            style={{
+                                                position: 'absolute',
+                                                top: `${topPos}px`,
+                                                left: 0,
+                                                right: 0,
+                                                height: `${PAGE_HEIGHT}px`,
+                                                border: '1px dashed rgba(84, 101, 255, 0.3)', // Subtle dashed border
+                                                borderBottom: i === numPages - 1 ? '1px dashed rgba(84, 101, 255, 0.3)' : '2px dashed rgba(84, 101, 255, 0.5)', // Theme dash for breaks
+                                                background: 'rgba(255, 255, 255, 0.01)', // Very subtle highlight
+                                                zIndex: 0,
+                                                pointerEvents: 'none',
+                                                boxSizing: 'border-box',
+                                                display: 'flex',
+                                                justifyContent: 'flex-end',
+                                                alignItems: 'flex-start',
+                                                padding: '8px'
+                                            }}
+                                        >
+                                            <span style={{ 
+                                                color: 'rgba(255, 255, 255, 0.3)', 
+                                                fontSize: '12px',
+                                                fontWeight: 500,
+                                                background: 'rgba(0,0,0,0.3)',
+                                                padding: '4px 8px',
+                                                borderRadius: '4px'
+                                            }}>
+                                                Page {i + 1}
+                                            </span>
+                                        </div>
+                                    );
+                                }
+                                return pages;
+                            })()}
+
+                            <ResponsiveGridLayout
+                                className="layout"
+                                layouts={layouts}
+                                breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
+                                cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
+                                rowHeight={2} // Granular Control (2px per row)
+                                margin={[10, 0]} // No vertical margin, we handle it in CSS
+                                draggableHandle=".drag-handle"
+                                onLayoutChange={onLayoutChange}
+                                compactType="vertical"
+                                preventCollision={false}
+                            >
+                                {items.map(item => (
+                                    <div key={item.id} className="dashboard-item" data-grid={item.layout}>
+                                        <div className="dashboard-card-inner glass-panel">
+                                            <div className="item-header drag-handle">
+                                                <span className="item-title">{item.title}</span>
+                                                <div className="item-controls">
+                                                    {item.type === 'graph' && (
+                                                        <button 
+                                                            onClick={() => handleAnalyzeGraph(item)}
+                                                            className="btn-icon-sm"
+                                                            title="Analyze Graph with AI"
+                                                            style={{ color: '#8b5cf6' }} // Purple tint
+                                                            disabled={analyzingItems.has(item.id)}
+                                                        >
+                                                            {analyzingItems.has(item.id) ? (
+                                                                <div className="spinner-sm"></div>
+                                                            ) : (
+                                                                <>
+                                                                    <Sparkles size={14} /> Analyze
+                                                                </>
+                                                            )}
+                                                        </button>
                                                     )}
-                                                </button>
-                                            )}
-                                            {item.type === 'text' && (
-                                                 <button 
-                                                    onClick={() => handleSaveNote(item)}
-                                                    className="btn-save-icon"
-                                                    title="Save Note"
-                                                 >
-                                                    <Save size={18} />
-                                                </button>
-                                            )}
+                                                    {item.type === 'text' && (
+                                                         <button 
+                                                            onClick={() => handleSaveNote(item)}
+                                                            className="btn-save-icon"
+                                                            title="Save Note"
+                                                         >
+                                                            <Save size={18} />
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <div className="item-content">
+                                                {renderItemContent(item)}
+                                            </div>
+                                            <button 
+                                                className="btn-delete-item" 
+                                                onMouseDown={(e) => e.stopPropagation()} 
+                                                onClick={() => removeItem(item.id)}
+                                                title="Delete Item"
+                                            >
+                                                <Trash2 size={14} />
+                                            </button>
                                         </div>
                                     </div>
-                                    <div className="item-content">
-                                        {renderItemContent(item)}
-                                    </div>
-                                    <button 
-                                        className="btn-delete-item" 
-                                        onMouseDown={(e) => e.stopPropagation()} 
-                                        onClick={() => removeItem(item.id)}
-                                        title="Delete Item"
-                                    >
-                                        <Trash2 size={14} />
-                                    </button>
-                                </div>
-                            ))}
-                        </ResponsiveGridLayout>
+                                ))}
+                            </ResponsiveGridLayout>
+                        </div>
                     )}
                     {items.length === 0 && !loading && (
                         <div className="empty-dashboard">

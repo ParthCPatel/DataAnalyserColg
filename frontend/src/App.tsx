@@ -10,6 +10,7 @@ import GraphBuilder from './components/GraphBuilder/GraphBuilder';
 import CustomDashboard from './components/CustomDashboard/CustomDashboard';
 import AllGraphs from './components/AllGraphs/AllGraphs';
 import PrintableDashboard from './components/PrintableDashboard/PrintableDashboard';
+import MainLayout from './components/Layout/MainLayout';
 
 
 const ProtectedRoute = ({ children }: { children: React.ReactElement }) => {
@@ -24,63 +25,68 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<AuthPage />} />
-      <Route
-        path="/home"
-        element={
-          <ProtectedRoute>
-            <Home />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/history"
-        element={
-          <ProtectedRoute>
-            <ActivityHistory />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/graph-builder/:uploadId?"
-        element={
-          <ProtectedRoute>
-            <GraphBuilder />
-          </ProtectedRoute>
-        }
-      />
+      
+      {/* Protected Routes wrapped in MainLayout */}
+      <Route element={<MainLayout />}>
 
-      <Route
-        path="/custom-dashboard"
-        element={
-          <ProtectedRoute>
-            <CustomDashboard />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/all-graphs"
-        element={
-          <ProtectedRoute>
-            <AllGraphs />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/custom-dashboard/print"
-        element={
-          <ProtectedRoute>
-            <PrintableDashboard />
-          </ProtectedRoute>
-        }
-      />
+        <Route
+          path="/home"
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/history"
+          element={
+            <ProtectedRoute>
+              <ActivityHistory />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/graph-builder/:uploadId?"
+          element={
+            <ProtectedRoute>
+              <GraphBuilder />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/custom-dashboard"
+          element={
+            <ProtectedRoute>
+              <CustomDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/all-graphs"
+          element={
+            <ProtectedRoute>
+              <AllGraphs />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/custom-dashboard/print"
+          element={
+            <ProtectedRoute>
+              <PrintableDashboard />
+            </ProtectedRoute>
+          }
+        />
+      </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

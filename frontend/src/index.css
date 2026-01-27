@@ -307,7 +307,7 @@ body {
 /* Dashboard Styles */
 .dashboard {
   flex: 1;
-  min-height: 100vh; /* Allow growing */
+  height: 100%;
   position: relative;
   background: var(--bg-primary);
   /* Removed height: 100vh and overflow: hidden */

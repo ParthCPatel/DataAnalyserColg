@@ -3,11 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import type { AppDispatch, RootState } from '../../store';
 import { fetchHistory, restoreSession, refreshDatabaseState } from '../../features/appSlice';
-import { FileText, Clock, ChevronRight, LayoutDashboard, Trash2, MessageSquare, Database, PieChart } from 'lucide-react';
-import { BarChart3 } from 'lucide-react';
+import { FileText, Clock, ChevronRight, Trash2, MessageSquare, Database } from 'lucide-react';
 
 import "./ActivityHistory.css";
-import LogoutButton from '../LogoutButton/LogoutButton'; // Updated path // Not moved yet or remains in root for now
+
 
 import axios from 'axios';
 
@@ -71,27 +70,6 @@ const ActivityHistory: React.FC = () => {
             <div className="header-title-group">
                  <h2>Activity History</h2>
                  <p>Resume your past data analysis sessions</p>
-            </div>
-            <div className="header-actions">
-                <LogoutButton />
-                <button 
-                  onClick={() => navigate('/custom-dashboard')}
-                  className="btn-home"
-                >
-                   <LayoutDashboard size={16} /> Dashboard
-                </button>
-                <button 
-                  onClick={() => navigate('/dashboard')}
-                  className="btn-home"
-                >
-                   <BarChart3 size={16} /> Home
-                </button>
-                <button 
-                   onClick={() => navigate('/')} 
-                   className="btn-new-upload"
-                >
-                   New Upload
-                </button>
             </div>
         </div>
 

@@ -2,12 +2,12 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../../store';
-import { ChevronLeft, BarChart2, TrendingUp, Pin, LayoutDashboard, Save, BarChart3 } from 'lucide-react';
+import { ChevronLeft, Info, Save, Share2, Pin, Download, Database, BarChart2, TrendingUp } from 'lucide-react';
 import axios from '../../api/axiosConfig';
 import './GraphBuilder.css';
 import GraphControls from '../GraphControls/GraphControls';
 import GraphChart from '../GraphChart/GraphChart';
-import LogoutButton from '../LogoutButton/LogoutButton';
+
 
 const CHART_TYPES = [
     { id: 'bar', label: 'Bar Chart', icon: BarChart2 },
@@ -325,23 +325,6 @@ const GraphBuilder: React.FC = () => {
                             </button>
                         </>
                      )}
-                      <button onClick={() => navigate('/dashboard')} className="btn-back">
-                         <BarChart3 size={16} /> Home
-                      </button>
-                     <button onClick={() => navigate('/custom-dashboard')} className="btn-back">
-                         <LayoutDashboard size={16} /> Dashboard
-                     </button>
-                    
-                     <button onClick={() => navigate('/all-graphs')} className="btn-back">
-                        <BarChart2 size={16} /> All Graphs
-                     </button>
-                     <button 
-                       onClick={() => navigate('/')} 
-                       className="btn-new-upload"
-                    >
-                       New Upload
-                    </button>
-                    <LogoutButton />
                  </div>
              </div>
 

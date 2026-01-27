@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from '../../api/axiosConfig';
-import { ChevronLeft, Trash2, Pin, LayoutDashboard, BarChart3 } from 'lucide-react';
+import { Trash2, Pin } from 'lucide-react';
 import GraphChart from '../GraphChart/GraphChart';
 import '../CustomDashboard/CustomDashboard.css'; // Reuse existing styles from sibling folder
 
@@ -87,20 +87,7 @@ const AllGraphs: React.FC = () => {
 
             <div className="dashboard-header-bar">
                 <h2>All Saved Graphs</h2>
-                <div className="header-actions">
-                    <button 
-                        onClick={() => navigate('/')} 
-                        className="btn-new-upload"
-                    >
-                        New Upload
-                    </button>
-                    <button onClick={() => navigate('/dashboard')} className="btn-back" style={{ marginRight: '12px' }}>
-                        <BarChart3 size={16} /> Home
-                    </button>
-                    <button onClick={() => navigate('/custom-dashboard')} className="btn-back">
-                        <LayoutDashboard size={16} /> Dashboard
-                    </button>
-                </div>
+                {/* Actions could go here */}
             </div>
 
             <div className="grid-container" style={{ padding: '20px', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(400px, 1fr))', gap: '20px', overflowY: 'auto' }}>
@@ -109,7 +96,7 @@ const AllGraphs: React.FC = () => {
                 ) : graphs.length === 0 ? (
                     <div className="empty-state">
                         <p>No saved graphs found in library.</p>
-                        <button onClick={() => navigate('/')} className="btn-action" style={{ marginTop: 10 }}>
+                        <button onClick={() => navigate('/home')} className="btn-action" style={{ marginTop: 10 }}>
                             Create New Graph
                         </button>
                     </div>

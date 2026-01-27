@@ -1,43 +1,81 @@
 @media print {
     @page {
-        margin: 5mm; 
+        margin: 0; 
         size: landscape; 
     }
     
-    body {
-        margin: 0;
-        padding: 0;
+    /* RESET EVERYTHING FOR PRINT */
+    html, body, #root, .app-container {
+        width: 100% !important;
+        height: auto !important;
+        min-height: auto !important;
+        overflow: visible !important;
+        margin: 0 !important;
+        padding: 0 !important;
         background-color: #020617 !important;
-        color: #f8fafc !important;
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-        /* Removed flex/centering to force Top-Left alignment */
+    }
+
+    /* Hide Navbar and Sidebar explicitly */
+    nav, .sidebar, .navbar, .navbar-container, .header-actions, .dashboard-header-bar, .no-print {
+        display: none !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        width: 0 !important;
+    }
+
+    /* Reset MainLayout content padding */
+    .main-layout-content {
+        padding-top: 0 !important;
+        height: auto !important;
+        overflow: visible !important;
+    }
+
+    /* Main Layout overrides */
+    div[style*="height: 100vh"], div[style*="overflow: hidden"] {
+        height: auto !important;
+        overflow: visible !important;
+        position: static !important;
     }
 
     .printable-dashboard-page {
         background-color: #020617 !important;
         color: #f8fafc !important;
-        min-height: 100vh;
         
-        /* FIXED LAYOUT STRATEGY - TOP LEFT ALIGNMENT */
-        /* Force grid width (1200px) and scale down to fit paper (75% -> 900px wide) */
-        width: 1200px !important;
-        max-width: 1200px !important;
-        zoom: 0.87; 
+        /* FORCE DESKTOP WIDTH so layout stays 2/3 cols */
+        width: 1280px !important;
+        min-width: 1280px !important;
+        max-width: 1280px !important;
         
-        margin: 0 !important; /* No auto margin, just strict 0 */
-        padding: 0 !important;
+        /* SCALE DOWN TO FIT A4 */
+        /* A4 Landscape printable width ~1080px. 1280px * 0.6 = 768px (Safe) */
+        /* 1280px * 0.8 = 1024px (Tight fit) */
+        zoom: 0.75 !important; 
         
+        height: auto !important;
+        min-height: auto !important;
         overflow: visible !important;
-        transform-origin: top left; /* Ensure it scales from top-left */
+        padding: 0 !important;
+        margin: 0 !important;
+        position: static !important;
     }
 
     .printable-dashboard-page .dashboard-item {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding-bottom: 10px !important;
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    .printable-dashboard-page .dashboard-card-inner {
         background-color: #1e293b !important;
         border: 1px solid #334155 !important;
         color: #f8fafc !important;
-        box-shadow: none !important;
-        page-break-inside: avoid; /* Try to prevent items splitting across pages */
+        height: 100%;
+        display: flex;
+        flex-direction: column;
     }
 
     .printable-dashboard-page .item-header {
@@ -47,12 +85,27 @@
 }
 
 /* Default (Screen) View - Dark Theme matching App */
+/* This wrapper handles the scrolling for this specific page */
+.printable-dashboard-wrapper {
+    width: 100%;
+    height: 100%; /* Fill the MainLayout content area */
+    overflow-y: auto; /* Enable vertical scrolling */
+    background-color: var(--bg-primary);
+}
+
 .printable-dashboard-page {
     width: 100%;
-    min-height: 100vh;
-    background-color: var(--bg-primary); /* Dark background */
-    color: var(--text-primary);
+    min-height: 100%; /* Ensure it fills at least the wrapper */
     padding: 20px;
+    padding-top: 20px; /* Reduced from 80px since we moved the button */
+    padding-bottom: 80px; /* Space for the print button at bottom */
+}
+
+/* Back button positioning refinement */
+.back-button-container {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: flex-end;
 }
 
 .printable-dashboard-page .react-grid-item {
@@ -65,16 +118,28 @@
 }
 
 .printable-dashboard-page .dashboard-item {
-    /* Glassmorphism from index.css */
+    /* Glassmorphism moved to inner */
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding-bottom: 10px; /* Visual Gap */
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.printable-dashboard-page .dashboard-card-inner {
+    /* Glassmorphism from index.css logic */
     background: var(--glass-bg);
     backdrop-filter: blur(12px);
     border: 1px solid var(--glass-border);
     border-radius: 12px;
     padding: 16px;
     box-shadow: var(--shadow-sm);
-    overflow: hidden;
+    flex: 1;
     display: flex;
     flex-direction: column;
+    height: 100%;
 }
 
 .printable-dashboard-page .item-header {

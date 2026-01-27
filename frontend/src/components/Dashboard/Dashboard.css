@@ -2,7 +2,7 @@
 .dashboard {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100%;
   overflow: hidden;
   position: relative;
 }
@@ -19,6 +19,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding-left: 80px;
 }
 
 .dashboard-title {
@@ -255,17 +256,9 @@
   transform: scale(1.1);
 }
 
-.result-content {
-  /* Using existing class, but ensuring styles here if needed */
-}
-
 .json-display {
   max-height: 200px;
   overflow: auto;
-}
-
-.result-feedback {
-  /* Existing styles */
 }
 
 .sql-label-container {

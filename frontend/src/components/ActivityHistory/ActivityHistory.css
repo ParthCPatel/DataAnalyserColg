@@ -20,6 +20,7 @@
   justify-content: space-between;
   align-items: center;
   /* Dashboard uses center, History was flex-start. Changing to center for consistency */
+  padding-left: 80px;
 }
 
 .header-title-group h2 {
