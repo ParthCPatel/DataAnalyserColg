@@ -102,36 +102,38 @@ const AllGraphs: React.FC = () => {
                     </div>
                 ) : (
                     graphs.map(graph => (
-                        <div key={graph._id} className="dashboard-item glass-panel" style={{ position: 'relative', height: '400px', display: 'flex', flexDirection: 'column' }}>
-                            <div className="item-header" style={{ padding: '10px 15px' }}>
-                                <span className="item-title">{graph.title}</span>
-                                <div style={{ display: 'flex', gap: '8px' }}>
-                                    <button 
-                                        className="btn-icon-sm" 
-                                        title="Pin to Dashboard"
-                                        onClick={() => handlePinToDashboard(graph)}
-                                        style={{ color: 'var(--accent-primary)' }}
-                                    >
-                                        <Pin size={16} />
-                                    </button>
-                                    <button 
-                                        className="btn-icon-sm" 
-                                        title="Delete from Library"
-                                        onClick={() => setGraphToDelete(graph)}
-                                        style={{ color: 'var(--accent-danger)' }}
-                                    >
-                                        <Trash2 size={16} />
-                                    </button>
+                        <div key={graph._id} className="dashboard-item" style={{ position: 'relative', height: '400px', display: 'flex', flexDirection: 'column' }}>
+                            <div className="dashboard-card-inner glass-panel">
+                                <div className="item-header" style={{ padding: '10px 15px' }}>
+                                    <span className="item-title">{graph.title}</span>
+                                    <div style={{ display: 'flex', gap: '8px' }}>
+                                        <button 
+                                            className="btn-icon-sm" 
+                                            title="Pin to Dashboard"
+                                            onClick={() => handlePinToDashboard(graph)}
+                                            style={{ color: 'var(--accent-primary)' }}
+                                        >
+                                            <Pin size={16} />
+                                        </button>
+                                        <button 
+                                            className="btn-icon-sm" 
+                                            title="Delete from Library"
+                                            onClick={() => setGraphToDelete(graph)}
+                                            style={{ color: 'var(--accent-danger)' }}
+                                        >
+                                            <Trash2 size={16} />
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="item-content" style={{ flex: 1, minHeight: 0 }}>
-                                <div style={{ width: '100%', height: '100%', flex: 1, minHeight: 0 }}>
-                                     <GraphChart 
-                                          data={graph.content.data}
-                                          chartType={graph.content.chartType}
-                                          xAxis={graph.content.xAxis}
-                                          yAxis={graph.content.yAxis}
-                                     />
+                                <div className="item-content" style={{ flex: 1, minHeight: 0 }}>
+                                    <div style={{ width: '100%', height: '100%', flex: 1, minHeight: 0 }}>
+                                         <GraphChart 
+                                              data={graph.content.data}
+                                              chartType={graph.content.chartType}
+                                              xAxis={graph.content.xAxis}
+                                              yAxis={graph.content.yAxis}
+                                         />
+                                    </div>
                                 </div>
                             </div>
                         </div>

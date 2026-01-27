@@ -122,24 +122,32 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenSidebar }) => {
                 onClick={() => navigate('/home')} 
                 className="btn-new-upload"
                 style={{
-                  background: 'rgba(255, 255, 255, 0.1)',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
-                  color: 'var(--text-secondary)',
+                  background: isActive('/home') ? 'rgba(99, 102, 241, 0.1)' : 'rgba(255, 255, 255, 0.1)',
+                  border: '1px solid',
+                  borderColor: isActive('/home') ? 'var(--accent-primary)' : 'rgba(255, 255, 255, 0.2)',
+                  color: isActive('/home') ? 'var(--text-primary)' : 'var(--text-secondary)',
                   padding: '8px 16px',
                   borderRadius: '8px',
                   cursor: 'pointer',
                   fontSize: '14px',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '6px'
+                  gap: '6px',
+                  transition: 'all 0.2s',
+                  boxShadow: isActive('/home') ? '0 0 10px rgba(99, 102, 241, 0.3)' : 'none'
                 }}
                 onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = 'var(--accent-primary)';
-                    e.currentTarget.style.color = 'var(--text-primary)';
+                    if (!isActive('/home')) {
+                        e.currentTarget.style.borderColor = 'var(--accent-primary)';
+                        e.currentTarget.style.color = 'var(--text-primary)';
+                    }
                 }}
                 onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-                    e.currentTarget.style.color = 'var(--text-secondary)';
+                    if (!isActive('/home')) {
+                        e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                        e.currentTarget.style.color = 'var(--text-secondary)';
+                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+                    }
                 }}
              >
                 <Plus size={16} /> New Upload
