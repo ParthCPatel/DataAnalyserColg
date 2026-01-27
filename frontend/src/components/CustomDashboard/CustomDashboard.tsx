@@ -328,15 +328,17 @@ const CustomDashboard: React.FC = () => {
                      {toast.msg}
                  </div>
              )}
-            <div className="dashboard-header-bar">
+            <div className="unified-page-header">
                 <h2>Custom Dashboard</h2>
+                
                 <div className="header-actions">
-                     <button onClick={() => addItem('text')} className="btn-action">
+                    <button onClick={() => addItem('text')} className="btn-action">
                         <FileText size={16} /> Add Text
                     </button>
-                     <button onClick={() => navigate('/all-graphs')} className="btn-action">
+                    <button onClick={() => navigate('/all-graphs')} className="btn-action">
                         <BarChart2 size={16} /> Add Graph
                     </button>
+                    
                     <button onClick={() => saveDashboard(items, true)} className="btn-action" disabled={saving}>
                         {saving ? (
                             <>

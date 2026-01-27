@@ -49,25 +49,46 @@ interface AppState {
   analysisLoading: boolean;
 }
 
-const initialState: AppState = {
-  schema: "",
-  question: "",
-  queryHistory: [],
-  generatedSQL: "",
-  queryResult: null,
-  databaseState: null,
-  tableStates: {},
-  loading: "idle",
-  error: null,
-  feedback: null,
-  validation: null,
-  uploadedDbPath: null,
-  uploadSchema: null,
-  currentUploadId: null,
-  historyData: [],
-  analysisResult: null,
-  analysisLoading: false,
+const getInitialState = (): AppState => {
+  const baseState: AppState = {
+    schema: "",
+    question: "",
+    queryHistory: [],
+    generatedSQL: "",
+    queryResult: null,
+    databaseState: null,
+    tableStates: {},
+    loading: "idle",
+    error: null,
+    feedback: null,
+    validation: null,
+    uploadedDbPath: null,
+    uploadSchema: null,
+    currentUploadId: null,
+    historyData: [],
+    analysisResult: null,
+    analysisLoading: false,
+  };
+  
+  try {
+      const savedSession = localStorage.getItem("active_session");
+      if (savedSession) {
+          const parsed = JSON.parse(savedSession);
+          if (parsed.currentUploadId) {
+             baseState.currentUploadId = parsed.currentUploadId;
+             baseState.uploadedDbPath = parsed.uploadedDbPath;
+             baseState.schema = parsed.schema;
+             baseState.uploadSchema = parsed.schema;
+             baseState.queryHistory = parsed.queryHistory || [];
+          }
+      }
+  } catch (e) {
+      console.warn("Failed to load initial state from storage", e);
+  }
+  return baseState;
 };
+
+const initialState: AppState = getInitialState();
 
 export const uploadDatabase = createAsyncThunk(
   "app/uploadDatabase",
@@ -286,6 +307,15 @@ export const analyzeTable = createAsyncThunk(
   }
 );
 
+// Helper to persist session
+const saveSessionToStorage = (data: any) => {
+  try {
+    localStorage.setItem("active_session", JSON.stringify(data));
+  } catch (e) {
+    console.warn("Failed to save session to storage", e);
+  }
+};
+
 const appSlice = createSlice({
   name: "app",
   initialState,
@@ -334,6 +364,17 @@ const appSlice = createSlice({
     },
     setUploadId: (state, action: PayloadAction<string | null>) => {
       state.currentUploadId = action.payload;
+    },
+
+    rehydrateSession: (state, action: PayloadAction<any>) => {
+       const { currentUploadId, uploadedDbPath, schema, queryHistory } = action.payload;
+       if (currentUploadId) {
+           state.currentUploadId = currentUploadId;
+           state.uploadedDbPath = uploadedDbPath;
+           state.schema = schema;
+           state.uploadSchema = schema;
+           state.queryHistory = queryHistory || [];
+       }
     },
 
     restoreSession: (state, action: PayloadAction<any>) => {
@@ -389,6 +430,14 @@ const appSlice = createSlice({
       }
 
       state.tableStates = {}; // Will be refreshed by refreshDatabaseState
+
+      // Persist to local storage
+      saveSessionToStorage({
+          currentUploadId: state.currentUploadId,
+          uploadedDbPath: state.uploadedDbPath,
+          schema: state.schema || (upload ? upload.schema : ""), // Ensure schema is saved
+          queryHistory: state.queryHistory
+      });
     },
 
     resetSession: (state) => {
@@ -401,6 +450,8 @@ const appSlice = createSlice({
       state.uploadedDbPath = null;
       state.databaseState = null;
       state.schema = "";
+      
+      localStorage.removeItem("active_session");
     },
     setUploadedDbPath: (state, action: PayloadAction<string | null>) => {
       state.uploadedDbPath = action.payload;
@@ -482,6 +533,14 @@ const appSlice = createSlice({
       }
       state.queryResult = null;
       state.queryHistory = []; // Reset history on new upload
+
+      // Persist to local storage
+      saveSessionToStorage({
+          currentUploadId: state.currentUploadId,
+          uploadedDbPath: state.uploadedDbPath,
+          schema: state.schema,
+          queryHistory: []
+      });
     });
     builder.addCase(uploadDatabase.rejected, (state, action) => {
       state.loading = "failed";
@@ -609,6 +668,7 @@ export const {
   setDatabaseState,
   setUploadId,
   restoreSession,
+  rehydrateSession,
   resetSession,
   setUploadedDbPath,
 } = appSlice.actions;

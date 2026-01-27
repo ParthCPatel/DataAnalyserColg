@@ -118,11 +118,25 @@ const PrintableDashboard: React.FC = () => {
                             border: '1px solid #334155',
                             borderRadius: '8px',
                             cursor: 'pointer',
-                            backdropFilter: 'blur(4px)'
+                            backdropFilter: 'blur(4px)',
+                            marginLeft: '10px'
                         }}
                     >
                         <ChevronLeft size={16} /> Back
                     </button>
+                    
+                    <span style={{ 
+                        color: 'var(--text-secondary)', 
+                        fontSize: '14px', 
+                        fontStyle: 'italic',
+                        // background: 'rgba(255, 255, 255, 0.05)',
+                        padding: '6px 12px',
+                        borderRadius: '6px',
+                        // border: '1px solid rgba(255, 255, 255, 0.1)',
+                        marginRight: '10px'
+                    }}>
+                        For printing, please ensure the paper size is set to <strong>A4</strong>.
+                    </span>
                 </div>
 
                 <ResponsiveGridLayout

@@ -39,6 +39,7 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenSidebar }) => {
     }}>
         {/* Left: Brand/Logo (Optional) or just Sidebar Trigger */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+            <Database size={35} color="var(--accent-primary)" />
              <button
                 onClick={onOpenSidebar}
                 style={{
@@ -46,7 +47,7 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenSidebar }) => {
                   height: '40px',
                   borderRadius: '50%',
                   background: 'rgba(30, 30, 40, 0.6)',
-                  border: '1px solid rgba(255,255,255,0.1)',
+                  border: '1px solid var(--accent-primary)',
                   color: 'var(--text-primary)',
                   display: 'flex',
                   alignItems: 'center',
@@ -61,7 +62,7 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenSidebar }) => {
                 }}
                 onMouseLeave={(e) => {
                     e.currentTarget.style.background = 'rgba(30, 30, 40, 0.6)';
-                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
+                    // e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
                 }}
               >
                 <User size={20} />
@@ -71,8 +72,7 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenSidebar }) => {
                 onClick={() => navigate('/dashboard')} 
                 style={{ fontWeight: 700, fontSize: '18px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
               >
-                <Database size={20} color="var(--accent-primary)" />
-                <span>DataAnalyser</span>
+               
               </div>
         </div>
 

@@ -324,9 +324,9 @@ const Dashboard: React.FC = () => {
       <div className="background-glow glow-purple"></div>
 
       {/* Main Content Area - Scrollable */}
-      <div className="dashboard-container">
-        <div className="dashboard-header">
-           <h2 className="dashboard-title">Data Explorer</h2>
+      {/* Main Content Area - Scrollable */}
+      <div className="unified-page-header">
+           <h2>Data Explorer</h2>
            <div className="header-actions">
                 {/* Analyze Selected Button */}
                 {selectedTables.size > 0 && (
@@ -402,11 +402,10 @@ const Dashboard: React.FC = () => {
                  >
                     <BarChart2 size={16} /> Add Graph
                  </button>
-           </div>
-        </div>
-        <p className="instruction-text" style={{ color: 'rgba(255,255,255,0.6)', marginTop: '-10px', marginBottom: '20px', fontSize: '0.9rem' }}>
-            Check tables to compare, or select fields for query results
-        </p>
+            </div>
+      </div>
+
+      <div className="dashboard-container">
 
         {/* Error Banner (Red) */}
         {error && !error.includes("Missing required columns") && (
@@ -437,8 +436,17 @@ const Dashboard: React.FC = () => {
              </div>
         ) : (
              <div className="empty-state">
-              <Database className="icon-empty" />
-              <p>No data loaded.</p>
+              {currentUploadId && !error ? (
+                  <>
+                     <div className="spinner"></div>
+                     <p className="loading-text" style={{ marginTop: '10px' }}>Loading session data...</p>
+                  </>
+              ) : (
+                  <>
+                    <Database className="icon-empty" />
+                    <p>No data loaded.</p>
+                  </>
+              )}
             </div>
         )}
 

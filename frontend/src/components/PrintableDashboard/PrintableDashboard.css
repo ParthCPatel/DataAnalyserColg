@@ -105,7 +105,8 @@
 .back-button-container {
     margin-bottom: 20px;
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between; /* Back on left, Text on right */
+    align-items: center;
 }
 
 .printable-dashboard-page .react-grid-item {

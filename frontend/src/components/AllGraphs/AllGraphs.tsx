@@ -85,7 +85,7 @@ const AllGraphs: React.FC = () => {
                 </div>
             )}
 
-            <div className="dashboard-header-bar">
+            <div className="unified-page-header">
                 <h2>All Saved Graphs</h2>
                 {/* Actions could go here */}
             </div>

@@ -305,15 +305,11 @@ const GraphBuilder: React.FC = () => {
                      {toast.msg}
                  </div>
              )}
-             <div className="graph-header">
-                <button onClick={() => navigate('/history')} className="btn-back">
-                    <ChevronLeft size={16} /> Back to History
-                </button>
-                <div style={{ marginLeft: '16px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '12px' }}>
-                     <span>{query ? `Result: ${query.length > 40 ? query.substring(0,40)+'...' : query}` : 'Graph Builder'}</span>
-                </div>
+             <div className="unified-page-header">
+                <h2>
+                     {query ? `Result: ${query.length > 40 ? query.substring(0,40)+'...' : query}` : 'Graph Builder'}
+                </h2>
                 
-                <div style={{ flex: 1 }}></div>
                  <div className="header-actions">
                      {graphData.length > 0 && (
                         <>

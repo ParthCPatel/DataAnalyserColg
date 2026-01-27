@@ -64,14 +64,11 @@ const ActivityHistory: React.FC = () => {
       <div className="background-glow glow-blue"></div>
       <div className="background-glow glow-purple"></div>
 
+      <div className="unified-page-header">
+           <h2>Activity History</h2>
+      </div>
+
       <div className="dashboard-container">
-        
-        <div className="dashboard-header">
-            <div className="header-title-group">
-                 <h2>Activity History</h2>
-                 <p>Resume your past data analysis sessions</p>
-            </div>
-        </div>
 
         {loading === 'pending' && (
             <div className="loading-container">

@@ -1,37 +1,28 @@
-/* Dashboard Layout */
+/* Dashboard Styles */
 .dashboard {
+  flex: 1;
+  height: 100%;
+  position: relative;
+  background: var(--bg-primary);
   display: flex;
   flex-direction: column;
-  height: 100%;
-  overflow: hidden;
-  position: relative;
+  overflow: hidden; /* Ensure scroll is handled by container */
 }
 
 .dashboard-container {
-  flex: 1;
-  overflow-y: auto;
-  padding-bottom: 140px;
-  max-width: 100%;
-  margin: 0;
-}
-
-.dashboard-header {
+  position: relative;
+  z-index: 10;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 24px 32px; /* Standardized Padding */
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-left: 80px;
+  flex-direction: column;
+  gap: 20px;
+  box-sizing: border-box;
+  padding-bottom: 50px; /* Add padding at bottom for scroll room */
 }
 
-.dashboard-title {
-  font-size: 24px;
-  margin: 0;
-}
-
-.header-actions {
-  display: flex;
-  gap: 12px;
-}
-
+/* Dashboard Header Removed - Using .unified-page-header from index.css */
 /* Buttons */
 .btn-history {
   background: rgba(255, 255, 255, 0.1);
