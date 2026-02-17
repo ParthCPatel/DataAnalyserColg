@@ -1,0 +1,17 @@
+fastapi
+uvicorn[standard]
+motor
+python-multipart
+python-jose[cryptography]
+passlib[bcrypt]
+pandas
+langchain
+langchain-google-genai
+langgraph
+langchain-community
+python-dotenv
+aiofiles
+httpx
+pydantic
+pydantic-settings
+email-validator
