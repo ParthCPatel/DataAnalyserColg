@@ -38,9 +38,10 @@ async def sandbox(
         raise HTTPException(status_code=404, detail="Upload not found")
     
     db_path = upload_log["path"]
+    local_path = upload_service.get_local_path(db_path)
     
     # PERSISTENCE: Restore from MongoDB if missing locally
-    if not os.path.exists(db_path):
+    if not os.path.exists(local_path):
          await upload_service.retrieve_db_from_mongo(db_path, req.uploadId, db)
     
     # 2. Get Schema if not provided
@@ -54,7 +55,7 @@ async def sandbox(
         inputs = {
             "question": req.question,
             "schema": active_schema,
-            "db_path": db_path,
+            "db_path": local_path,
             "restricted_columns": req.restrictedColumns,
             "iterations": 0,
             "valid": False,

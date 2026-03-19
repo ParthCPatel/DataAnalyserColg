@@ -15,7 +15,18 @@ class UploadService:
     def __init__(self):
         self.upload_dir = os.path.abspath("uploads")
         if not os.path.exists(self.upload_dir):
-            os.makedirs(self.upload_dir)
+            os.makedirs(self.upload_dir, exist_ok=True)
+
+    def get_local_path(self, path: str) -> str:
+        """
+        Takes any path (windows, linux, absolute, relative) and returns 
+        the absolute path within the current environment's upload directory.
+        """
+        if not path:
+            return ""
+        # Get just the filename (e.g., "db_123.sqlite")
+        filename = os.path.basename(path)
+        return os.path.join(self.upload_dir, filename)
 
     def sanitize_table_name(self, name: str) -> str:
         # Simple sanitization
@@ -27,16 +38,15 @@ class UploadService:
     async def persist_db_to_mongo(self, db_path: str, upload_id: str, mongo_db: AsyncIOMotorDatabase):
         """
         Reads the SQLite file as binary and saves it to a binary_storage collection.
-        This provides persistence on ephemeral systems like Render.
         """
-        if not os.path.exists(db_path):
-            print(f"File {db_path} does not exist for persistence.")
+        local_path = self.get_local_path(db_path)
+        if not os.path.exists(local_path):
+            print(f"File {local_path} does not exist for persistence.")
             return
 
-        with open(db_path, "rb") as f:
+        with open(local_path, "rb") as f:
             binary_data = f.read()
 
-        # Update or Insert binary data
         await mongo_db.binary_storage.update_one(
             {"uploadId": upload_id},
             {"$set": {
@@ -46,26 +56,24 @@ class UploadService:
             }},
             upsert=True
         )
-        print(f"Persisted {db_path} to MongoDB for uploadId: {upload_id}")
+        print(f"Persisted {local_path} to MongoDB for uploadId: {upload_id}")
 
     async def retrieve_db_from_mongo(self, db_path: str, upload_id: str, mongo_db: AsyncIOMotorDatabase) -> bool:
         """
         Retrieves binary data from MongoDB and writes it back to a local SQLite file if missing.
         """
-        if os.path.exists(db_path):
+        local_path = self.get_local_path(db_path)
+        if os.path.exists(local_path):
             return True
-
-        # Ensure directory exists
-        os.makedirs(os.path.dirname(db_path), exist_ok=True)
 
         record = await mongo_db.binary_storage.find_one({"uploadId": upload_id})
         if record and "binary" in record:
-            with open(db_path, "wb") as f:
+            with open(local_path, "wb") as f:
                 f.write(record["binary"])
-            print(f"Restored {db_path} from MongoDB for uploadId: {upload_id}")
+            print(f"Restored {local_path} from MongoDB for uploadId: {upload_id}")
             return True
         
-        print(f"Failed to restore {db_path} from MongoDB (Upload ID: {upload_id})")
+        print(f"Failed to restore {local_path} from MongoDB (Upload ID: {upload_id})")
         return False
 
     async def process_csv_to_sqlite(self, csv_paths: List[str], original_names: List[str], master_db_path: str = None) -> Tuple[str, List[str]]:
@@ -76,9 +84,11 @@ class UploadService:
         if not master_db_path:
             # Generate a new master DB path
             timestamp = int(datetime.utcnow().timestamp())
-            master_db_path = os.path.join(self.upload_dir, f"db_{timestamp}.sqlite")
+            local_db_path = os.path.join(self.upload_dir, f"db_{timestamp}.sqlite")
+        else:
+            local_db_path = self.get_local_path(master_db_path)
 
-        conn = sqlite3.connect(master_db_path)
+        conn = sqlite3.connect(local_db_path)
         table_names = []
 
         try:
@@ -98,16 +108,17 @@ class UploadService:
         finally:
             conn.close()
 
-        return master_db_path, table_names
+        return local_db_path, table_names
 
     def get_database_state(self, db_path: str) -> Dict[str, Any]:
         """
         Returns {schema: str, databaseState: Dict}
         """
-        if not os.path.exists(db_path):
-            raise FileNotFoundError(f"Database file not found: {db_path}")
+        local_path = self.get_local_path(db_path)
+        if not os.path.exists(local_path):
+            raise FileNotFoundError(f"Database file not found: {local_path}")
 
-        conn = sqlite3.connect(db_path)
+        conn = sqlite3.connect(local_path)
         cursor = conn.cursor()
         
         try:

@@ -86,10 +86,10 @@ async def analyze_table(
         raise HTTPException(status_code=404, detail="Upload not found")
         
     db_path = upload_log["path"]
+    local_path = upload_service.get_local_path(db_path)
 
     # PERSISTENCE: Restore from MongoDB if missing locally
-    import os
-    if not os.path.exists(db_path):
+    if not os.path.exists(local_path):
          await upload_service.retrieve_db_from_mongo(db_path, req.uploadId, db)
     
     # 3. Get Data Context
@@ -102,7 +102,7 @@ async def analyze_table(
         # Full state might be heavy. Let's do a targeted fetch using sqlite3 directly here 
         # or expand upload_service. Let's keep it simple here.
         import sqlite3
-        conn = sqlite3.connect(db_path)
+        conn = sqlite3.connect(local_path)
         cursor = conn.cursor()
         
         for t in targets:
