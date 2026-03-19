@@ -1,0 +1,145 @@
+.dashboard-note {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
+.note-error {
+    color: #ff4d4d;
+    padding: 0.5rem;
+    font-size: 0.9rem;
+}
+
+/* Read-Only Mode */
+.dashboard-note.read-only {
+    overflow: hidden;
+    height: 100%;
+}
+
+.note-content-display {
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+    text-align: left;
+    padding: 10px;
+    /* Add padding here so text is spaced but scrollbar is at the edge */
+}
+
+/* ReactQuill Dark Theme Overrides */
+.dashboard-note .quill {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
+.dashboard-note .ql-toolbar.ql-snow {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px 6px 0 0;
+    font-family: inherit;
+}
+
+.dashboard-note .ql-container.ql-snow {
+    flex: 1;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    background: rgba(0, 0, 0, 0.2);
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    overflow-y: auto;
+    /* Allow scrolling */
+    min-height: 0;
+}
+
+.dashboard-note .ql-editor {
+    min-height: 300px;
+    max-height: 55vh;
+    overflow-y: auto;
+    line-height: 1.7;
+}
+
+/* Quill toolbar icons color override to match dark theme */
+.dashboard-note .ql-snow .ql-stroke {
+    stroke: var(--text-secondary);
+}
+
+.dashboard-note .ql-snow .ql-fill {
+    fill: var(--text-secondary);
+}
+
+.dashboard-note .ql-snow .ql-picker {
+    color: var(--text-secondary);
+}
+
+.dashboard-note .ql-snow .ql-picker-options {
+    background-color: var(--bg-secondary);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dashboard-note .ql-snow .ql-tooltip {
+    background-color: var(--bg-elevated);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+}
+
+/* Specific styling for Title type notes */
+.dashboard-note.title-note .ql-container.ql-snow,
+.dashboard-note.title-note .ql-toolbar.ql-snow {
+    background: transparent;
+    border: none;
+}
+
+.dashboard-note.title-note .ql-editor {
+    font-size: 1.25rem;
+    font-weight: 600;
+    padding: 8px 0;
+}
+
+/* Make placeholder text white/light so it's readable in dark mode */
+.dashboard-note .ql-editor.ql-blank::before {
+    color: rgba(255, 255, 255, 0.6) !important;
+    font-style: italic;
+}
+
+/* Custom Scrollbar for notes */
+.note-content-display::-webkit-scrollbar {
+    width: 8px;
+}
+
+.note-content-display::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.note-content-display::-webkit-scrollbar-thumb {
+    background: rgba(27, 28, 80, 0.6);
+    border-radius: 4px;
+}
+
+.note-content-display::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-primary);
+}
+
+/* Custom scrollbar for the Quill editor */
+.dashboard-note .ql-editor::-webkit-scrollbar {
+    width: 6px;
+}
+
+.dashboard-note .ql-editor::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.dashboard-note .ql-editor::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+}
+
+.dashboard-note .ql-editor::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-primary);
+}

@@ -1,0 +1,185 @@
+@media print {
+    @page {
+        margin: 0;
+        size: landscape;
+    }
+
+    /* RESET EVERYTHING FOR PRINT */
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    html,
+    body,
+    #root,
+    .app-container {
+        width: 100% !important;
+        height: auto !important;
+        min-height: auto !important;
+        overflow: visible !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background-color: #01091a !important;
+    }
+
+    /* Hide Navbar and Sidebar explicitly */
+    nav,
+    .sidebar,
+    .navbar,
+    .navbar-container,
+    .header-actions,
+    .dashboard-header-bar,
+    .no-print {
+        display: none !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        width: 0 !important;
+    }
+
+    /* Reset MainLayout content padding */
+    .main-layout-content {
+        padding-top: 0 !important;
+        height: auto !important;
+        overflow: visible !important;
+    }
+
+    /* Main Layout overrides */
+    div[style*="height: 100vh"],
+    div[style*="overflow: hidden"] {
+        height: auto !important;
+        overflow: visible !important;
+        position: static !important;
+    }
+
+    .printable-dashboard-page {
+        background-color: #01091a !important;
+        color: #f8fafc !important;
+
+        width: 1280px !important;
+        min-width: 1280px !important;
+        max-width: 1280px !important;
+
+        zoom: 0.60 !important;
+
+        height: auto !important;
+        min-height: auto !important;
+        overflow: visible !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        position: static !important;
+    }
+
+    .printable-dashboard-page .dashboard-item {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding-bottom: 10px !important;
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    .printable-dashboard-page .dashboard-card-inner {
+        background-color: #051329 !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        color: #f8fafc !important;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .printable-dashboard-page .item-header {
+        color: #f8fafc !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    }
+}
+
+/* Default (Screen) View - Dark Theme matching App */
+/* This wrapper handles the scrolling for this specific page */
+.printable-dashboard-wrapper {
+    width: 100%;
+    height: 100%;
+    /* Fill the MainLayout content area */
+    overflow-y: auto;
+    /* Enable vertical scrolling */
+    background-color: var(--bg-primary);
+}
+
+.printable-dashboard-page {
+    width: 100%;
+    min-height: 100%;
+    /* Ensure it fills at least the wrapper */
+    padding: 20px;
+    padding-top: 20px;
+    /* Reduced from 80px since we moved the button */
+    padding-bottom: 80px;
+    /* Space for the print button at bottom */
+}
+
+/* Back button positioning refinement */
+.back-button-container {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    /* Back on left, Text on right */
+    align-items: center;
+}
+
+.printable-dashboard-page .react-grid-item {
+    transition: none !important;
+}
+
+.printable-dashboard-page .recharts-responsive-container {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.printable-dashboard-page .dashboard-item {
+    /* Glassmorphism moved to inner */
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding-bottom: 10px;
+    /* Visual Gap */
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.printable-dashboard-page .dashboard-card-inner {
+    /* Glassmorphism from index.css logic */
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: var(--shadow-sm);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.printable-dashboard-page .dashboard-card-inner.title-card {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    padding: 8px 0 !important;
+}
+
+.printable-dashboard-page .item-header {
+    margin-bottom: 12px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 8px;
+}
+
+.printable-dashboard-page .item-content {
+    flex: 1;
+    min-height: 0;
+    color: var(--text-secondary);
+}
