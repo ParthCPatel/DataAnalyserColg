@@ -59,8 +59,8 @@
 }
 
 .dashboard-note .ql-editor {
-    min-height: 300px;
-    max-height: 55vh;
+    height: 100%;
+    flex: 1;
     overflow-y: auto;
     line-height: 1.7;
 }
