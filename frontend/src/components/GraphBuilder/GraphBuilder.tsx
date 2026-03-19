@@ -67,11 +67,11 @@ const GraphBuilder: React.FC = () => {
             if (!effectiveUploadId) return;
             setLoading(true);
             try {
-                const historyRes = await axios.get('http://localhost:3000/api/history/sessions');
+                const historyRes = await axios.get('/history/sessions');
                 const session = historyRes.data.find((s: any) => s.upload._id === effectiveUploadId);
                 if (session) {
                     setDbPath(session.upload.path);
-                    const stateRes = await axios.post('http://localhost:3000/api/sandbox', {
+                    const stateRes = await axios.post('/sandbox', {
                         dbFilePath: session.upload.path,
                         question: "",
                         uploadId: effectiveUploadId
@@ -197,10 +197,10 @@ const GraphBuilder: React.FC = () => {
             if (selectedTable === 'all') {
                 prompt = `Select columns "${xAxis}" and "${yAxis}" by joining the relevant tables automatically. Return the data as a JSON array. Limit to 1000 rows.`;
             } else {
-                prompt = `Give me ${xAxis} and ${yAxis} from table "${selectedTable}". Return as many rows as possible (up to 1000).`;
+                prompt = `Give me ${xAxis} and ${yAxis} from table "${selectedTable}". Return as many rows as possible (up to 1000). Use SQL LIMIT 1000.`;
             }
 
-            const res = await axios.post('http://localhost:3000/api/sandbox', {
+            const res = await axios.post('/sandbox', {
                 dbFilePath: dbPath,
                 question: prompt,
                 uploadId: effectiveUploadId,

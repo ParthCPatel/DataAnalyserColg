@@ -28,7 +28,7 @@ const ActivityHistory: React.FC = () => {
     if (!sessionToDelete) return;
 
     try {
-        await axios.delete(`http://localhost:3000/api/history/session/${sessionToDelete}`);
+        await axios.delete(`/history/session/${sessionToDelete}`);
         dispatch(fetchHistory()); // Refresh list
         setSessionToDelete(null);
     } catch (error) {

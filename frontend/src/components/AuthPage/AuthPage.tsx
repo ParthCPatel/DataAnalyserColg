@@ -46,7 +46,7 @@ const AuthPage: React.FC = () => {
             // VERIFY EMAIL OTP
             setLocalLoading(true);
             try {
-                const res = await axios.post('http://localhost:3000/api/auth/verify-email', {
+                const res = await axios.post('/auth/verify-email', {
                     email: pendingVerificationEmail,
                     otp
                 });
@@ -66,7 +66,7 @@ const AuthPage: React.FC = () => {
         } else if (authMode === 'forgot_password') {
             setLocalLoading(true);
             try {
-                const res = await axios.post('http://localhost:3000/api/auth/forgot-password', { email });
+                const res = await axios.post('/auth/forgot-password', { email });
                 setLocalSuccess(res.data.message);
                 setAuthMode('reset_password');
             } catch (err: any) {
@@ -77,7 +77,7 @@ const AuthPage: React.FC = () => {
         } else if (authMode === 'reset_password') {
             setLocalLoading(true);
             try {
-                await axios.post('http://localhost:3000/api/auth/reset-password', {
+                await axios.post('/auth/reset-password', {
                     email,
                     otp,
                     new_password: password

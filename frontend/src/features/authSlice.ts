@@ -32,7 +32,7 @@ export const loginUser = createAsyncThunk(
   async ({ email, password }: any, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/auth/login",
+        "/auth/login",
         { email, password }
       );
       return response.data;
@@ -47,7 +47,7 @@ export const signupUser = createAsyncThunk(
   async ({ email, password }: any, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/auth/signup",
+        "/auth/signup",
         { email, password }
       );
       return response.data;
