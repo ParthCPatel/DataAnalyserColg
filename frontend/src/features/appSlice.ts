@@ -114,7 +114,7 @@ export const uploadDatabase = createAsyncThunk(
       }
 
       const response = await axios.post(
-        `/api/upload-db?clean=${clean || false}`,
+        `/upload-db?clean=${clean || false}`,
         formData,
         {
           headers: {
@@ -152,7 +152,7 @@ export const appendDatabase = createAsyncThunk(
       formData.append("database", file);
       formData.append("uploadId", uploadId);
       const response = await axios.post(
-        `/api/append?clean=${clean || false}`,
+        `/append?clean=${clean || false}`,
         formData,
         {
           headers: {
@@ -207,7 +207,7 @@ export const executeQuery = createAsyncThunk(
         finalRestrictedColumns
       );
 
-      const response = await axios.post("/api/sandbox", {
+      const response = await axios.post("/sandbox", {
         schema: activeSchema,
         question: finalQuestion,
         dbFilePath: activeDbPath,
@@ -231,7 +231,7 @@ export const deleteQuery = createAsyncThunk(
     try {
       const rootState = getState() as RootState;
       const token = rootState.auth.token;
-      await axios.delete(`/api/history/query/${queryId}`, {
+      await axios.delete(`/history/query/${queryId}`, {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
       return queryId;
@@ -250,7 +250,7 @@ export const fetchHistory = createAsyncThunk(
       const rootState = getState() as RootState;
       const token = rootState.auth.token;
       const response = await axios.get(
-        "/api/history/sessions", {
+        "/history/sessions", {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       }
       );
@@ -270,7 +270,7 @@ export const deleteTable = createAsyncThunk(
     try {
       const rootState = getState() as RootState;
       const token = rootState.auth.token;
-      await axios.delete("/api/table", {
+      await axios.delete("/table", {
         data: { uploadId, tableName },
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
@@ -303,7 +303,7 @@ export const refreshDatabaseState = createAsyncThunk(
         return rejectWithValue("No database path");
       }
 
-      const response = await axios.post("/api/sandbox", {
+      const response = await axios.post("/sandbox", {
         schema: uploadSchema,
         dbFilePath: uploadedDbPath,
         uploadId: currentUploadId,
@@ -353,7 +353,7 @@ export const analyzeTable = createAsyncThunk(
       const rootState = getState() as RootState;
       const token = rootState.auth.token;
       const response = await axios.post(
-        "/api/analyze-table",
+        "/analyze-table",
         { uploadId, tableName, tableNames },
         {
           headers: token ? { Authorization: `Bearer ${token}` } : {},
