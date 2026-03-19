@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Create a custom instance or configure the default one
 // We'll configure the default one for simplicity with existing code
-axios.defaults.baseURL = "http://localhost:3000/api";
+axios.defaults.baseURL = "https://dataanalysercolg.onrender.com/api";
 
 axios.interceptors.request.use(
   (config) => {
