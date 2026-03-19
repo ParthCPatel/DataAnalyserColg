@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../../store';
-import { ChevronLeft, Info, Save, Share2, Pin, Download, Database, BarChart2, TrendingUp } from 'lucide-react';
+import { Save, Pin, BarChart2, TrendingUp } from 'lucide-react';
 import axios from '../../api/axiosConfig';
 import './GraphBuilder.css';
 import GraphControls from '../GraphControls/GraphControls';
@@ -17,7 +17,7 @@ const CHART_TYPES = [
 
 const GraphBuilder: React.FC = () => {
     const { uploadId } = useParams<{ uploadId: string }>();
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     const location = useLocation();
     const { currentUploadId } = useSelector((state: RootState) => state.app);
     const effectiveUploadId = uploadId || currentUploadId;

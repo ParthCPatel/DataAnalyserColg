@@ -1,6 +1,6 @@
 import React from 'react';
 import { X, Sparkles, TrendingUp, AlertTriangle, HelpCircle, Loader2, Copy, Check } from 'lucide-react';
-import type { AnalysisResult } from '../features/appSlice';
+import type { AnalysisResult } from '../../features/appSlice';
 
 interface AnalysisModalProps {
     isOpen: boolean;
@@ -55,26 +55,26 @@ const AnalysisModal: React.FC<AnalysisModalProps> = ({ isOpen, onClose, tableNam
                     justifyContent: 'space-between'
                 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <div style={{ 
-                            background: 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))', 
-                            padding: '8px', 
+                        <div style={{
+                            background: 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))',
+                            padding: '8px',
                             borderRadius: '8px',
                             display: 'flex'
                         }}>
-                             <Sparkles size={20} color="white" />
+                            <Sparkles size={20} color="white" />
                         </div>
                         <div>
                             <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 600 }}>AI Deep Dive</h2>
-                            <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-secondary)' }}>Analyzing <span style={{color: 'white'}}>{tableName}</span></p>
+                            <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-secondary)' }}>Analyzing <span style={{ color: 'white' }}>{tableName}</span></p>
                         </div>
                     </div>
-                    <button 
-                        onClick={onClose} 
-                        className="btn-ghost" 
-                        style={{ 
-                            padding: '8px', 
-                            background: 'transparent', 
-                            border: 'none', 
+                    <button
+                        onClick={onClose}
+                        className="btn-ghost"
+                        style={{
+                            padding: '8px',
+                            background: 'transparent',
+                            border: 'none',
                             cursor: 'pointer',
                             color: 'var(--text-secondary)'
                         }}
@@ -94,7 +94,7 @@ const AnalysisModal: React.FC<AnalysisModalProps> = ({ isOpen, onClose, tableNam
                     ) : error ? (
                         <div style={{ padding: '20px', background: 'rgba(239, 68, 68, 0.1)', color: 'var(--error)', borderRadius: '8px' }}>
                             <AlertTriangle size={20} style={{ marginBottom: '8px' }} />
-                            <br/>
+                            <br />
                             {error}
                         </div>
                     ) : analysis ? (
@@ -110,10 +110,10 @@ const AnalysisModal: React.FC<AnalysisModalProps> = ({ isOpen, onClose, tableNam
                             {/* Trends */}
                             <div>
                                 <h3 style={{ fontSize: '14px', textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--text-secondary)', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                    <TrendingUp size={16}/> Key Trends
+                                    <TrendingUp size={16} /> Key Trends
                                 </h3>
                                 <ul style={{ margin: 0, paddingLeft: '20px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                    {analysis.trends.map((trend, i) => (
+                                    {analysis.trends.map((trend: string, i: number) => (
                                         <li key={i} style={{ fontSize: '14px' }}>{trend}</li>
                                     ))}
                                 </ul>
@@ -123,27 +123,27 @@ const AnalysisModal: React.FC<AnalysisModalProps> = ({ isOpen, onClose, tableNam
                             {analysis.anomalies.length > 0 && (
                                 <div>
                                     <h3 style={{ fontSize: '14px', textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--text-secondary)', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                        <AlertTriangle size={16}/> Anomalies
+                                        <AlertTriangle size={16} /> Anomalies
                                     </h3>
                                     <ul style={{ margin: 0, paddingLeft: '20px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                        {analysis.anomalies.map((anom, i) => (
+                                        {analysis.anomalies.map((anom: string, i: number) => (
                                             <li key={i} style={{ fontSize: '14px' }}>{anom}</li>
                                         ))}
                                     </ul>
                                 </div>
                             )}
 
-                             {/* Suggested Questions */}
-                             <div>
+                            {/* Suggested Questions */}
+                            <div>
                                 <h3 style={{ fontSize: '14px', textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--text-secondary)', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                    <HelpCircle size={16}/> Ask your data
+                                    <HelpCircle size={16} /> Ask your data
                                 </h3>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                    {analysis.questions.map((q, i) => (
-                                        <div key={i} style={{ 
-                                            padding: '12px', 
-                                            background: 'rgba(255,255,255,0.05)', 
-                                            borderRadius: '8px', 
+                                    {analysis.questions.map((q: string, i: number) => (
+                                        <div key={i} style={{
+                                            padding: '12px',
+                                            background: 'rgba(255,255,255,0.05)',
+                                            borderRadius: '8px',
                                             fontSize: '13px',
                                             cursor: 'default',
                                             border: '1px solid transparent',
@@ -153,27 +153,27 @@ const AnalysisModal: React.FC<AnalysisModalProps> = ({ isOpen, onClose, tableNam
                                             alignItems: 'flex-start',
                                             gap: '12px'
                                         }}
-                                        onMouseEnter={(e) => {
-                                            e.currentTarget.style.borderColor = 'var(--accent-primary)';
-                                            e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
-                                        }}
-                                        onMouseLeave={(e) => {
-                                             e.currentTarget.style.borderColor = 'transparent';
-                                             e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
-                                        }}
+                                            onMouseEnter={(e) => {
+                                                e.currentTarget.style.borderColor = 'var(--accent-primary)';
+                                                e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
+                                            }}
+                                            onMouseLeave={(e) => {
+                                                e.currentTarget.style.borderColor = 'transparent';
+                                                e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
+                                            }}
                                         >
                                             <span style={{ flex: 1 }}>{q}</span>
-                                            <button 
+                                            <button
                                                 onClick={(e) => { e.stopPropagation(); handleCopy(q, i); }}
                                                 className="btn-ghost"
                                                 title="Copy to clipboard"
-                                                style={{ 
-                                                    padding: '4px', 
-                                                    height: 'auto', 
+                                                style={{
+                                                    padding: '4px',
+                                                    height: 'auto',
                                                     background: 'transparent',
                                                     border: 'none',
                                                     cursor: 'pointer',
-                                                    color: copiedIndex === i ? '#4ade80' : 'rgba(255,255,255,0.5)' 
+                                                    color: copiedIndex === i ? '#4ade80' : 'rgba(255,255,255,0.5)'
                                                 }}
                                             >
                                                 {copiedIndex === i ? <Check size={16} /> : <Copy size={16} />}
