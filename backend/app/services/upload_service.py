@@ -8,7 +8,7 @@ from app.core.config import get_settings
 
 settings = get_settings()
 
-from motor.motor_asyncio import AsyncIOMotorDatabase
+from motor.motor_asyncio import AsyncIOMotorDatabase, AsyncIOMotorGridFSBucket
 from bson import ObjectId
 
 class UploadService:
@@ -37,44 +37,56 @@ class UploadService:
 
     async def persist_db_to_mongo(self, db_path: str, upload_id: str, mongo_db: AsyncIOMotorDatabase):
         """
-        Reads the SQLite file as binary and saves it to a binary_storage collection.
+        Saves the SQLite file to MongoDB GridFS.
         """
         local_path = self.get_local_path(db_path)
         if not os.path.exists(local_path):
             print(f"File {local_path} does not exist for persistence.")
             return
 
-        with open(local_path, "rb") as f:
-            binary_data = f.read()
+        bucket = AsyncIOMotorGridFSBucket(mongo_db)
+        
+        # 1. Clean up old version if exists
+        try:
+             async for cursor in bucket.find({"filename": upload_id}):
+                 await bucket.delete(cursor["_id"])
+        except:
+             pass
 
-        await mongo_db.binary_storage.update_one(
-            {"uploadId": upload_id},
-            {"$set": {
-                "uploadId": upload_id,
-                "binary": binary_data,
-                "updatedAt": datetime.utcnow()
-            }},
-            upsert=True
-        )
-        print(f"Persisted {local_path} to MongoDB for uploadId: {upload_id}")
+        # 2. Upload to GridFS
+        with open(local_path, "rb") as f:
+            await bucket.upload_from_stream(
+                upload_id,  # Using upload_id as the "filename" for easy lookup
+                f,
+                metadata={"uploadId": upload_id, "updatedAt": datetime.utcnow()}
+            )
+        print(f"Persisted {local_path} to GridFS for uploadId: {upload_id}")
 
     async def retrieve_db_from_mongo(self, db_path: str, upload_id: str, mongo_db: AsyncIOMotorDatabase) -> bool:
         """
-        Retrieves binary data from MongoDB and writes it back to a local SQLite file if missing.
+        Retrieves binary data from MongoDB GridFS and writes it back to a local SQLite file if missing.
         """
         local_path = self.get_local_path(db_path)
         if os.path.exists(local_path):
             return True
 
-        record = await mongo_db.binary_storage.find_one({"uploadId": upload_id})
-        if record and "binary" in record:
-            with open(local_path, "wb") as f:
-                f.write(record["binary"])
-            print(f"Restored {local_path} from MongoDB for uploadId: {upload_id}")
-            return True
+        bucket = AsyncIOMotorGridFSBucket(mongo_db)
         
-        print(f"Failed to restore {local_path} from MongoDB (Upload ID: {upload_id})")
-        return False
+        try:
+            # Look for the file by its "filename" (which we set to upload_id)
+            cursor = await bucket.find({"filename": upload_id}).to_list(length=1)
+            if not cursor:
+                print(f"No GridFS file found for uploadId: {upload_id}")
+                return False
+
+            with open(local_path, "wb") as f:
+                await bucket.download_to_stream(cursor[0]["_id"], f)
+            
+            print(f"Restored {local_path} from GridFS for uploadId: {upload_id}")
+            return True
+        except Exception as e:
+            print(f"GridFS Restore failed: {e}")
+            return False
 
     async def process_csv_to_sqlite(self, csv_paths: List[str], original_names: List[str], master_db_path: str = None) -> Tuple[str, List[str]]:
         """
