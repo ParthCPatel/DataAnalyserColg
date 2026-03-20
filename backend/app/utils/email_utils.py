@@ -53,4 +53,5 @@ def send_otp_email(recipient_email: str, otp: str, is_reset: bool = False):
         return True
     except Exception as e:
         logger.error(f"Failed to send email to {recipient_email}: {e}")
+        print(f"!!! SMTP ERROR for {recipient_email}: {str(e)} !!!")
         return False
