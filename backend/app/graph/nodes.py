@@ -30,7 +30,7 @@ Question: {question}
 Restricted Columns (Select only these if not empty): {restricted_columns}
 Previous Feedback (if any): {feedback}
 
-Return ONLY the raw SQL query. Do not wrap in markdown or code blocks.
+Return ONLY the raw SQL query. Do not wrap in markdown or code blocks. Unless the user specifies a limit, use a default LIMIT 1000 to ensure enough data for visualization.
 """
 
 VALIDATE_SQL_PROMPT = """
