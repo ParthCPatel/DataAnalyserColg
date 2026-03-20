@@ -37,7 +37,17 @@ export const loginUser = createAsyncThunk(
       );
       return response.data;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Login failed");
+      if (error.response && error.response.status === 403) {
+        return rejectWithValue({
+          message: error.response.data?.detail || "Email not verified",
+          status: 403,
+          email
+        });
+      }
+      return rejectWithValue({
+        message: error.response?.data?.detail || error.response?.data?.message || "Login failed",
+        status: error.response?.status
+      });
     }
   }
 );
@@ -96,9 +106,14 @@ const authSlice = createSlice({
       localStorage.setItem("token", action.payload.token);
       localStorage.setItem("user", JSON.stringify(action.payload.user));
     });
-    builder.addCase(loginUser.rejected, (state, action) => {
+    builder.addCase(loginUser.rejected, (state, action: any) => {
       state.loading = false;
-      state.error = action.payload as string;
+      if (action.payload?.status === 403) {
+        state.pendingVerificationEmail = action.payload.email;
+        state.error = null;
+      } else {
+        state.error = action.payload?.message || "Login failed";
+      }
     });
 
     // Signup
