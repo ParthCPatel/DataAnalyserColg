@@ -46,12 +46,21 @@ def send_otp_email(recipient_email: str, otp: str, is_reset: bool = False):
     msg["To"] = recipient_email
 
     try:
-        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
-            server.starttls()
-            server.login(SMTP_USERNAME, SMTP_PASSWORD)
-            server.send_message(msg)
+        if str(SMTP_PORT) == "465":
+            with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT) as server:
+                server.login(SMTP_USERNAME, SMTP_PASSWORD)
+                server.send_message(msg)
+        else:
+            with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+                server.starttls()
+                server.login(SMTP_USERNAME, SMTP_PASSWORD)
+                server.send_message(msg)
+        print(f"✅ OTP email sent successfully to {recipient_email}")
         return True
     except Exception as e:
         logger.error(f"Failed to send email to {recipient_email}: {e}")
-        print(f"!!! SMTP ERROR for {recipient_email}: {str(e)} !!!")
+        print(f"❌ SMTP ERROR for {recipient_email}: {str(e)}")
+        # If it's a login error, help the user
+        if "authentication failed" in str(e).lower():
+            print("💡 HINT: Check your Gmail App Password. Make sure it's 16 characters and has no spaces.")
         return False
