@@ -6,11 +6,12 @@ from typing import Optional
 
 logger = logging.getLogger(__name__)
 
-SMTP_SERVER = os.getenv("SMTP_SERVER", "")
-SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
-SMTP_USERNAME = os.getenv("SMTP_USERNAME", "")
-SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "")
-SENDER_EMAIL = os.getenv("SENDER_EMAIL", SMTP_USERNAME)
+SMTP_SERVER = os.getenv("SMTP_SERVER", "").strip()
+SMTP_PORT_RAW = os.getenv("SMTP_PORT", "587").strip()
+SMTP_PORT = int(SMTP_PORT_RAW) if SMTP_PORT_RAW.isdigit() else 587
+SMTP_USERNAME = os.getenv("SMTP_USERNAME", "").strip()
+SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "").strip()
+SENDER_EMAIL = os.getenv("SENDER_EMAIL", SMTP_USERNAME).strip()
 
 def send_otp_email(recipient_email: str, otp: str, is_reset: bool = False):
     """
