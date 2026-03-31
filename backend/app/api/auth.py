@@ -98,7 +98,7 @@ async def verify_email(req: VerifyOTPRequest, db: AsyncIOMotorDatabase = Depends
     }
 
 @router.post("/login", response_model=dict)
-async def login(user_credentials: UserCreate, db: AsyncIOMotorDatabase = Depends(get_database)):
+async def login(user_credentials: UserCreate, background_tasks: BackgroundTasks, db: AsyncIOMotorDatabase = Depends(get_database)):
     # Note: re-using UserCreate schema just for email/password fields, though technically we don't create user here.
     # Ideally use a separate Login schema or OAuth2PasswordRequestForm
     
@@ -110,7 +110,20 @@ async def login(user_credentials: UserCreate, db: AsyncIOMotorDatabase = Depends
          raise HTTPException(status_code=401, detail="Invalid credentials")
          
     if not user.get("is_verified", False):
-         raise HTTPException(status_code=403, detail="Email not verified")
+         # Generate and send a new OTP since the user is not verified yet
+         otp_code = "".join(str(secrets.randbelow(10)) for _ in range(6))
+         expires_at = datetime.utcnow() + timedelta(minutes=10)
+         
+         await db.otps.delete_many({"email": user["email"], "type": "verification"})
+         await db.otps.insert_one({
+             "email": user["email"],
+             "otp": otp_code,
+             "type": "verification",
+             "expires_at": expires_at
+         })
+         
+         background_tasks.add_task(send_otp_email, user["email"], otp_code, False)
+         raise HTTPException(status_code=403, detail="Email not verified. A new OTP has been sent.")
 
     access_token_expires = timedelta(days=7)
     access_token = create_access_token(
