@@ -34,39 +34,27 @@ class ResetPasswordRequest(BaseModel):
         return v
 
 @router.post("/signup", response_model=dict)
-async def create_user(user: UserCreate, background_tasks: BackgroundTasks, db: AsyncIOMotorDatabase = Depends(get_database)):
+async def create_user(user: UserCreate, db: AsyncIOMotorDatabase = Depends(get_database)):
     existing_user = await db.users.find_one({"email": user.email})
     if existing_user:
-        if existing_user.get("is_verified"):
-            raise HTTPException(status_code=400, detail="Email already registered")
-        else:
-            # Drop old unverified user to recreate
-            await db.users.delete_one({"email": user.email})
+        raise HTTPException(status_code=400, detail="Email already registered")
 
     hashed_password = get_password_hash(user.password)
-    user_in_db = UserInDB(email=user.email, hashed_password=hashed_password, is_verified=False)
+    # Set is_verified to True immediately to skip email verification
+    user_in_db = UserInDB(email=user.email, hashed_password=hashed_password, is_verified=True)
     
     new_user = await db.users.insert_one(user_in_db.dict(by_alias=True, exclude={"id"}))
     created_user = await db.users.find_one({"_id": new_user.inserted_id})
     
-    # Generate OTP
-    otp_code = "".join(str(secrets.randbelow(10)) for _ in range(6))
-    expires_at = datetime.utcnow() + timedelta(minutes=10)
+    # Issue token immediately
+    access_token = create_access_token(
+        subject=str(created_user["_id"]), expires_delta=timedelta(days=7)
+    )
     
-    await db.otps.delete_many({"email": user.email, "type": "verification"})
-    await db.otps.insert_one({
-        "email": user.email,
-        "otp": otp_code,
-        "type": "verification",
-        "expires_at": expires_at
-    })
-    
-    background_tasks.add_task(send_otp_email, user.email, otp_code, False)
-
     return {
-        "status": "pending_verification",
-        "message": "Please confirm your email using the OTP sent to your inbox.",
-        "email": user.email
+        "status": "success",
+        "token": access_token,
+        "user": UserResponse(**created_user).dict(by_alias=True)
     }
 
 @router.post("/verify-email", response_model=dict)
@@ -98,7 +86,7 @@ async def verify_email(req: VerifyOTPRequest, db: AsyncIOMotorDatabase = Depends
     }
 
 @router.post("/login", response_model=dict)
-async def login(user_credentials: UserCreate, background_tasks: BackgroundTasks, db: AsyncIOMotorDatabase = Depends(get_database)):
+async def login(user_credentials: UserCreate, db: AsyncIOMotorDatabase = Depends(get_database)):
     # Note: re-using UserCreate schema just for email/password fields, though technically we don't create user here.
     # Ideally use a separate Login schema or OAuth2PasswordRequestForm
     
@@ -108,22 +96,6 @@ async def login(user_credentials: UserCreate, background_tasks: BackgroundTasks,
     
     if not verify_password(user_credentials.password, user["hashed_password"]):
          raise HTTPException(status_code=401, detail="Invalid credentials")
-         
-    if not user.get("is_verified", False):
-         # Generate and send a new OTP since the user is not verified yet
-         otp_code = "".join(str(secrets.randbelow(10)) for _ in range(6))
-         expires_at = datetime.utcnow() + timedelta(minutes=10)
-         
-         await db.otps.delete_many({"email": user["email"], "type": "verification"})
-         await db.otps.insert_one({
-             "email": user["email"],
-             "otp": otp_code,
-             "type": "verification",
-             "expires_at": expires_at
-         })
-         
-         background_tasks.add_task(send_otp_email, user["email"], otp_code, False)
-         raise HTTPException(status_code=403, detail="Email not verified. A new OTP has been sent.")
 
     access_token_expires = timedelta(days=7)
     access_token = create_access_token(
